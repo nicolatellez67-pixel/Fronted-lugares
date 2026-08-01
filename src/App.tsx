@@ -1,14 +1,7 @@
-import "./App.css";
-import PokemonList from "./components/PokemonList";
+import AppRoutes from "./routes/AppRoutes";
 
 function App() {
-  return (
-    <div className="App">
-      <h1>Pokédex</h1>
-
-      <PokemonList />
-    </div>
-  );
+  return <AppRoutes />;
 }
 
 export default App;
