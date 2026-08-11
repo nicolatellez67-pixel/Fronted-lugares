@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../repositories/authRepository";
+import "./LoginPage.css";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
@@ -19,30 +20,35 @@ function LoginPage() {
   }
 
   return (
-    <div>
-      <h1>Iniciar sesión</h1>
+    <div className="login-page">
+      <div className="login-box">
+        <div className="login-header">
+          <h1>Bienvenido</h1>
+          <p>Sistema de asignación de asientos</p>
+        </div>
 
-      <input
-        type="email"
-        placeholder="Correo electrónico"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
+        <div className="login-form">
+          <label>Correo electrónico</label>
+          <input
+            type="email"
+            placeholder="Ingrese su correo"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
 
-      <br />
-      <br />
+          <label>Contraseña</label>
+          <input
+            type="password"
+            placeholder="Ingrese su contraseña"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
 
-      <input
-        type="password"
-        placeholder="Contraseña"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-
-      <br />
-      <br />
-
-      <button onClick={handleLogin}>Ingresar</button>
+          <button onClick={handleLogin}>
+            INGRESAR
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
