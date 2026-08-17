@@ -8,11 +8,11 @@ function LoginPage() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  function handleLogin() {
-    const user = login(email, password);
+  async function handleLogin() {
+    const user = await login(email, password);
 
     if (user) {
-      alert("Bienvenido " + user.name);
+      alert("Bienvenido " + user.nombre);
       navigate("/home");
     } else {
       alert("Correo o contraseña incorrectos");
@@ -22,13 +22,16 @@ function LoginPage() {
   return (
     <div className="login-page">
       <div className="login-box">
+
         <div className="login-header">
           <h1>Bienvenido</h1>
           <p>Sistema de asignación de asientos</p>
         </div>
 
         <div className="login-form">
+
           <label>Correo electrónico</label>
+
           <input
             type="email"
             placeholder="Ingrese su correo"
@@ -37,6 +40,7 @@ function LoginPage() {
           />
 
           <label>Contraseña</label>
+
           <input
             type="password"
             placeholder="Ingrese su contraseña"
@@ -47,6 +51,7 @@ function LoginPage() {
           <button onClick={handleLogin}>
             INGRESAR
           </button>
+
         </div>
       </div>
     </div>
