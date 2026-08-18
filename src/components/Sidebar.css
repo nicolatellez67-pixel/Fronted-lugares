@@ -1,0 +1,54 @@
+.sidebar {
+  width: 230px;
+  height: 100vh;
+  background: #123a6d;
+  color: white;
+  padding: 25px 15px;
+  box-sizing: border-box;
+
+  position: fixed;
+  left: 0;
+  top: 0;
+
+  overflow-y: auto;
+}
+
+.sidebar h2 {
+  text-align: center;
+  margin-bottom: 35px;
+  color: white;
+}
+
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sidebar a {
+  padding: 14px 15px;
+  color: white;
+  text-decoration: none;
+  border-radius: 7px;
+  font-size: 16px;
+}
+
+.sidebar a:hover {
+  background: #1d548f;
+}
+
+.sidebar a.active {
+  background: #f5c400;
+  color: #123a6d;
+}
+
+/* Barra de desplazamiento */
+
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: #315f91;
+  border-radius: 10px;
+}

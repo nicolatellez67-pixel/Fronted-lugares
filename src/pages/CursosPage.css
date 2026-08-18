@@ -1,0 +1,176 @@
+.cursos-layout {
+  min-height: 100vh;
+  background: #eef4fb;
+}
+
+.cursos-page {
+  margin-left: 230px;
+  min-height: 100vh;
+  padding: 40px;
+  box-sizing: border-box;
+  background: #eef4fb;
+  color: #123a6d;
+}
+
+.cursos-page h1 {
+  margin: 0;
+  font-size: 42px;
+  text-align: center;
+  color: #123a6d;
+}
+
+.cursos-page > p {
+  text-align: center;
+  color: #5f6b78;
+  margin-bottom: 25px;
+}
+
+/* BUSCADOR */
+
+.buscador-cursos {
+  display: block;
+  width: 350px;
+  max-width: 90%;
+  margin: 0 auto 25px;
+  padding: 12px;
+  box-sizing: border-box;
+
+  background: white;
+  color: #333;
+
+  border: 1px solid #d6e0ea;
+  border-radius: 8px;
+
+  font-size: 15px;
+  outline: none;
+}
+
+.buscador-cursos:focus {
+  border-color: #f5c400;
+}
+
+/* TABLA */
+
+.tabla-cursos {
+  max-width: 1000px;
+  margin: auto;
+  padding: 25px;
+
+  background: white;
+  border-radius: 14px;
+
+  box-shadow: 0 8px 25px rgba(18, 58, 109, 0.12);
+}
+
+.tabla-cursos h2 {
+  margin-top: 0;
+  text-align: center;
+  color: #123a6d;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+th {
+  padding: 14px;
+  background: #123a6d;
+  color: white;
+  text-align: left;
+}
+
+td {
+  padding: 13px;
+  color: #333;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+tr:hover {
+  background: #f8fafc;
+}
+
+/* BOTON VER */
+
+.boton-ver {
+  padding: 9px 15px;
+
+  border: none;
+  border-radius: 7px;
+
+  background: #1769aa;
+  color: white;
+
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.boton-ver:hover {
+  background: #125887;
+}
+
+/* BOTON VOLVER */
+
+.boton-volver {
+  padding: 10px 18px;
+  margin-bottom: 20px;
+
+  border: none;
+  border-radius: 7px;
+
+  background: #123a6d;
+  color: white;
+
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.boton-volver:hover {
+  background: #0d2d54;
+}
+
+/* RESUMEN */
+
+.resumen-curso {
+  max-width: 400px;
+  margin: 25px auto;
+  padding: 20px;
+
+  background: white;
+  border-radius: 14px;
+
+  text-align: center;
+
+  box-shadow: 0 8px 25px rgba(18, 58, 109, 0.12);
+}
+
+.resumen-curso h2 {
+  margin: 0;
+  color: #123a6d;
+}
+
+/* SIN ESTUDIANTES */
+
+.sin-estudiantes {
+  padding: 30px;
+  text-align: center;
+  color: #6b7280;
+}
+
+/* CELULAR */
+
+@media (max-width: 700px) {
+  .cursos-page {
+    margin-left: 180px;
+    padding: 25px;
+  }
+
+  .tabla-cursos {
+    overflow-x: auto;
+  }
+
+  table {
+    min-width: 700px;
+  }
+}
