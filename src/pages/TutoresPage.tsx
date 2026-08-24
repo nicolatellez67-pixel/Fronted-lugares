@@ -1,5 +1,7 @@
 import { useState } from "react";
+
 import Sidebar from "../components/Sidebar";
+
 import "./TutoresPage.css";
 
 type Curso = {
@@ -61,13 +63,16 @@ function TutoresPage() {
   }
 
   function obtenerEstudiantesDelCurso(curso: Curso) {
-    return estudiantes.filter((estudiante) => {
-      return (
+    return estudiantes.filter(
+      (estudiante) =>
         quitarTildes(estudiante.curso) ===
         quitarTildes(`${curso.grado} ${curso.paralelo}`)
-      );
-    });
+    );
   }
+
+  /*
+   * VISTA DEL CURSO
+   */
 
   if (cursoSeleccionado) {
     const estudiantesDelCurso =
@@ -75,9 +80,11 @@ function TutoresPage() {
 
     return (
       <div className="tutores-layout">
+
         <Sidebar />
 
         <main className="tutores-page">
+
           <button
             className="boton-volver"
             onClick={() => setCursoSeleccionado(null)}
@@ -85,134 +92,270 @@ function TutoresPage() {
             ← Volver a cursos
           </button>
 
-          <h1>
-            Tutores - {cursoSeleccionado.grado}{" "}
-            {cursoSeleccionado.paralelo}
-          </h1>
+          <div className="tutores-header">
 
-          <p>
-            Tutores de los estudiantes del curso.
-          </p>
+            <div>
+              <h1>
+                Tutores - {cursoSeleccionado.grado}{" "}
+                {cursoSeleccionado.paralelo}
+              </h1>
+
+              <p>
+                Información de los tutores de los
+                estudiantes del curso.
+              </p>
+            </div>
+
+            <div className="cantidad-estudiantes">
+
+              <strong>
+                {estudiantesDelCurso.length}
+              </strong>
+
+              <span>
+                estudiantes
+              </span>
+
+            </div>
+
+          </div>
 
           <div className="tabla-tutores">
-            <h2>Estudiantes y tutores</h2>
+
+            <div className="tabla-titulo">
+
+              <h2>
+                Estudiantes y tutores
+              </h2>
+
+              <span>
+                {estudiantesDelCurso.length} registrados
+              </span>
+
+            </div>
 
             {estudiantesDelCurso.length === 0 ? (
+
               <div className="sin-estudiantes">
+
+                <div>👥</div>
+
                 <p>
-                  No hay estudiantes registrados en este curso.
+                  No hay estudiantes registrados
+                  en este curso.
                 </p>
+
               </div>
+
             ) : (
+
               <table>
+
                 <thead>
+
                   <tr>
                     <th>Estudiante</th>
                     <th>Tutor</th>
                     <th>Teléfono</th>
                   </tr>
+
                 </thead>
 
                 <tbody>
-                  {estudiantesDelCurso.map((estudiante) => (
-                    <tr key={estudiante.id}>
-                      <td>
-                        {estudiante.nombre}{" "}
-                        {estudiante.apellido}
-                      </td>
 
-                      <td>
-                        {estudiante.tutor}
-                      </td>
+                  {estudiantesDelCurso.map(
+                    (estudiante) => (
 
-                      <td>
-                        {estudiante.telefonoTutor
-                          ? estudiante.telefonoTutor
-                          : "No registrado"}
-                      </td>
-                    </tr>
-                  ))}
+                      <tr key={estudiante.id}>
+
+                        <td>
+                          <strong>
+                            {estudiante.nombre}{" "}
+                            {estudiante.apellido}
+                          </strong>
+                        </td>
+
+                        <td>
+                          {estudiante.tutor}
+                        </td>
+
+                        <td>
+                          {estudiante.telefonoTutor
+                            ? estudiante.telefonoTutor
+                            : "No registrado"}
+                        </td>
+
+                      </tr>
+
+                    )
+                  )}
+
                 </tbody>
+
               </table>
+
             )}
+
           </div>
+
         </main>
+
       </div>
     );
   }
 
-  const cursosFiltrados = cursos.filter((curso) => {
-    const texto = quitarTildes(busqueda.trim());
+  /*
+   * LISTA DE CURSOS
+   */
 
-    const nombreCurso = quitarTildes(
-      `${curso.grado} ${curso.paralelo}`
-    );
+  const cursosFiltrados = cursos.filter((curso) => {
+
+    const texto =
+      quitarTildes(busqueda.trim());
+
+    const nombreCurso =
+      quitarTildes(
+        `${curso.grado} ${curso.paralelo}`
+      );
 
     return nombreCurso.includes(texto);
   });
 
   return (
     <div className="tutores-layout">
+
       <Sidebar />
 
       <main className="tutores-page">
-        <h1>Tutores</h1>
 
-        <p>
-          Consulta de tutores por curso y paralelo.
-        </p>
+        <div className="tutores-header">
 
-        <input
-          className="buscador-tutores"
-          type="text"
-          placeholder="Buscar curso..."
-          value={busqueda}
-          onChange={(e) => setBusqueda(e.target.value)}
-        />
+          <div>
+            <h1>Tutores</h1>
+
+            <p>
+              Consulta de tutores por curso y
+              paralelo.
+            </p>
+          </div>
+
+          <div className="cantidad-estudiantes">
+
+            <strong>
+              {cursos.length}
+            </strong>
+
+            <span>
+              cursos
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div className="buscador-contenedor">
+
+          <span>🔎</span>
+
+          <input
+            className="buscador-tutores"
+            type="text"
+            placeholder="Buscar curso..."
+            value={busqueda}
+            onChange={(e) =>
+              setBusqueda(e.target.value)
+            }
+          />
+
+        </div>
+
 
         <div className="tabla-tutores">
-          <h2>Lista de cursos</h2>
+
+          <div className="tabla-titulo">
+
+            <h2>
+              Lista de cursos
+            </h2>
+
+            <span>
+              {cursosFiltrados.length} resultados
+            </span>
+
+          </div>
+
 
           <table>
+
             <thead>
+
               <tr>
                 <th>Grado</th>
                 <th>Paralelo</th>
                 <th>Estudiantes</th>
                 <th>Acción</th>
               </tr>
+
             </thead>
 
             <tbody>
+
               {cursosFiltrados.map((curso) => {
+
                 const cantidad =
-                  obtenerEstudiantesDelCurso(curso).length;
+                  obtenerEstudiantesDelCurso(
+                    curso
+                  ).length;
 
                 return (
+
                   <tr key={curso.id}>
-                    <td>{curso.grado}</td>
-
-                    <td>{curso.paralelo}</td>
-
-                    <td>{cantidad}</td>
 
                     <td>
+                      <strong>
+                        {curso.grado}
+                      </strong>
+                    </td>
+
+                    <td>
+                      <span className="paralelo">
+                        {curso.paralelo}
+                      </span>
+                    </td>
+
+                    <td>
+                      {cantidad}
+                    </td>
+
+                    <td>
+
                       <button
                         className="boton-ver"
                         onClick={() =>
-                          setCursoSeleccionado(curso)
+                          setCursoSeleccionado(
+                            curso
+                          )
                         }
                       >
-                        Ver tutores
+                        Ver tutores →
                       </button>
+
                     </td>
+
                   </tr>
+
                 );
               })}
+
             </tbody>
+
           </table>
+
         </div>
+
       </main>
+
     </div>
   );
 }

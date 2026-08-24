@@ -8,101 +8,74 @@ type Estudiante = {
   apellido: string;
   curso: string;
   tutor: string;
-  telefonoTutor: string;
 };
-
-const estudiantesIniciales: Estudiante[] = [
-  {
-    id: 1,
-    nombre: "Juan",
-    apellido: "Pérez",
-    curso: "5to A",
-    tutor: "Carlos Pérez",
-    telefonoTutor: "70000001",
-  },
-  {
-    id: 2,
-    nombre: "María",
-    apellido: "López",
-    curso: "4to B",
-    tutor: "Ana López",
-    telefonoTutor: "70000002",
-  },
-  {
-    id: 3,
-    nombre: "Pedro",
-    apellido: "Gómez",
-    curso: "6to A",
-    tutor: "Laura Gómez",
-    telefonoTutor: "70000003",
-  },
-];
 
 function EstudiantesPage() {
   const [estudiantes, setEstudiantes] = useState<Estudiante[]>(() => {
     const datos = localStorage.getItem("estudiantes");
-
-    if (!datos) {
-      return estudiantesIniciales;
-    }
-
-    const estudiantesGuardados = JSON.parse(datos);
-
-    return estudiantesGuardados.map((estudiante: any) => ({
-      ...estudiante,
-      telefonoTutor: estudiante.telefonoTutor || "",
-    }));
+    return datos ? JSON.parse(datos) : [];
   });
+
+  const [busqueda, setBusqueda] = useState("");
 
   const [mostrarFormulario, setMostrarFormulario] =
     useState(false);
 
-  const [editando, setEditando] =
+  const [estudianteEditando, setEstudianteEditando] =
     useState<Estudiante | null>(null);
-
-  const [busqueda, setBusqueda] = useState("");
 
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
   const [curso, setCurso] = useState("");
   const [tutor, setTutor] = useState("");
-  const [telefonoTutor, setTelefonoTutor] = useState("");
+
+  function abrirFormulario() {
+    setEstudianteEditando(null);
+
+    setNombre("");
+    setApellido("");
+    setCurso("");
+    setTutor("");
+
+    setMostrarFormulario(true);
+  }
+
+  function editarEstudiante(estudiante: Estudiante) {
+    setEstudianteEditando(estudiante);
+
+    setNombre(estudiante.nombre);
+    setApellido(estudiante.apellido);
+    setCurso(estudiante.curso);
+    setTutor(estudiante.tutor);
+
+    setMostrarFormulario(true);
+  }
 
   function guardarEstudiante() {
-    if (
-      !nombre ||
-      !apellido ||
-      !curso ||
-      !tutor ||
-      !telefonoTutor
-    ) {
+    if (!nombre || !apellido || !curso || !tutor) {
       alert("Completa todos los campos");
       return;
     }
 
-    if (editando) {
-      const estudiantesActualizados = estudiantes.map(
-        (estudiante) =>
-          estudiante.id === editando.id
-            ? {
-                ...estudiante,
-                nombre,
-                apellido,
-                curso,
-                tutor,
-                telefonoTutor,
-              }
-            : estudiante
+    if (estudianteEditando) {
+      const actualizados = estudiantes.map((estudiante) =>
+        estudiante.id === estudianteEditando.id
+          ? {
+              ...estudiante,
+              nombre,
+              apellido,
+              curso,
+              tutor,
+            }
+          : estudiante
       );
 
-      setEstudiantes(estudiantesActualizados);
+      setEstudiantes(actualizados);
 
       localStorage.setItem(
         "estudiantes",
-        JSON.stringify(estudiantesActualizados)
+        JSON.stringify(actualizados)
       );
-
-      alert("Estudiante actualizado correctamente");
     } else {
       const nuevoEstudiante: Estudiante = {
         id: Date.now(),
@@ -110,69 +83,51 @@ function EstudiantesPage() {
         apellido,
         curso,
         tutor,
-        telefonoTutor,
       };
 
-      const nuevosEstudiantes = [
-        ...estudiantes,
-        nuevoEstudiante,
-      ];
+      const nuevos = [...estudiantes, nuevoEstudiante];
 
-      setEstudiantes(nuevosEstudiantes);
+      setEstudiantes(nuevos);
 
       localStorage.setItem(
         "estudiantes",
-        JSON.stringify(nuevosEstudiantes)
+        JSON.stringify(nuevos)
       );
-
-      alert("Estudiante agregado correctamente");
     }
 
-    limpiarFormulario();
-  }
-
-  function editarEstudiante(estudiante: Estudiante) {
-    setEditando(estudiante);
-
-    setNombre(estudiante.nombre);
-    setApellido(estudiante.apellido);
-    setCurso(estudiante.curso);
-    setTutor(estudiante.tutor);
-    setTelefonoTutor(estudiante.telefonoTutor || "");
-
-    setMostrarFormulario(true);
+    cerrarFormulario();
   }
 
   function eliminarEstudiante(id: number) {
-    const confirmar = confirm(
-      "¿Seguro que quieres eliminar este estudiante?"
+    const confirmar = window.confirm(
+      "¿Quieres eliminar este estudiante?"
     );
 
     if (!confirmar) {
       return;
     }
 
-    const nuevosEstudiantes = estudiantes.filter(
+    const nuevos = estudiantes.filter(
       (estudiante) => estudiante.id !== id
     );
 
-    setEstudiantes(nuevosEstudiantes);
+    setEstudiantes(nuevos);
 
     localStorage.setItem(
       "estudiantes",
-      JSON.stringify(nuevosEstudiantes)
+      JSON.stringify(nuevos)
     );
   }
 
-  function limpiarFormulario() {
+  function cerrarFormulario() {
+    setMostrarFormulario(false);
+
+    setEstudianteEditando(null);
+
     setNombre("");
     setApellido("");
     setCurso("");
     setTutor("");
-    setTelefonoTutor("");
-
-    setEditando(null);
-    setMostrarFormulario(false);
   }
 
   function quitarTildes(texto: string) {
@@ -184,26 +139,16 @@ function EstudiantesPage() {
 
   const estudiantesFiltrados = estudiantes.filter(
     (estudiante) => {
-      const texto = quitarTildes(busqueda.trim());
+      const texto = quitarTildes(busqueda);
 
-      const nombre = quitarTildes(estudiante.nombre);
-      const apellido = quitarTildes(estudiante.apellido);
-      const curso = quitarTildes(estudiante.curso);
-      const tutor = quitarTildes(estudiante.tutor);
-      const telefono = quitarTildes(
-        estudiante.telefonoTutor
+      const nombreCompleto = quitarTildes(
+        `${estudiante.nombre} ${estudiante.apellido}`
       );
 
-      const nombreCompleto =
-        `${nombre} ${apellido}`;
-
       return (
-        nombre.includes(texto) ||
-        apellido.includes(texto) ||
         nombreCompleto.includes(texto) ||
-        curso.includes(texto) ||
-        tutor.includes(texto) ||
-        telefono.includes(texto)
+        quitarTildes(estudiante.curso).includes(texto) ||
+        quitarTildes(estudiante.tutor).includes(texto)
       );
     }
   );
@@ -213,168 +158,207 @@ function EstudiantesPage() {
       <Sidebar />
 
       <main className="estudiantes-page">
-        <h1>Estudiantes</h1>
 
-        <p>
-          Gestión de estudiantes del colegio Don Bosco.
-        </p>
+        <div className="estudiantes-header">
 
-        <button
-          onClick={() => setMostrarFormulario(true)}
-        >
-          Agregar estudiante
-        </button>
+          <div>
+            <h1>Estudiantes</h1>
 
-        <input
-          type="text"
-          placeholder="Buscar estudiante..."
-          value={busqueda}
-          onChange={(e) =>
-            setBusqueda(e.target.value)
-          }
-        />
-
-        {mostrarFormulario && (
-          <div className="modal-fondo">
-            <div className="formulario">
-              <h2>
-                {editando
-                  ? "Editar estudiante"
-                  : "Nuevo estudiante"}
-              </h2>
-
-              <input
-                type="text"
-                placeholder="Nombre"
-                value={nombre}
-                onChange={(e) =>
-                  setNombre(e.target.value)
-                }
-              />
-
-              <input
-                type="text"
-                placeholder="Apellido"
-                value={apellido}
-                onChange={(e) =>
-                  setApellido(e.target.value)
-                }
-              />
-
-              <input
-                type="text"
-                placeholder="Curso"
-                value={curso}
-                onChange={(e) =>
-                  setCurso(e.target.value)
-                }
-              />
-
-              <input
-                type="text"
-                placeholder="Tutor"
-                value={tutor}
-                onChange={(e) =>
-                  setTutor(e.target.value)
-                }
-              />
-
-              <input
-                type="tel"
-                placeholder="Teléfono del tutor"
-                value={telefonoTutor}
-                onChange={(e) =>
-                  setTelefonoTutor(e.target.value)
-                }
-              />
-
-              <div className="botones-formulario">
-                <button
-                  onClick={guardarEstudiante}
-                >
-                  {editando
-                    ? "Actualizar"
-                    : "Guardar"}
-                </button>
-
-                <button
-                  onClick={limpiarFormulario}
-                >
-                  Cancelar
-                </button>
-              </div>
-            </div>
+            <p>
+              Gestión de estudiantes del colegio Don Bosco.
+            </p>
           </div>
-        )}
 
-        <div className="tabla">
-          <h2>Lista de estudiantes</h2>
+          <button
+            className="boton-nuevo"
+            onClick={abrirFormulario}
+          >
+            + Nuevo estudiante
+          </button>
+
+        </div>
+
+        <div className="estudiantes-barra">
+
+          <input
+            className="buscador-estudiantes"
+            type="text"
+            placeholder="Buscar estudiante, curso o tutor..."
+            value={busqueda}
+            onChange={(e) => setBusqueda(e.target.value)}
+          />
+
+          <div className="cantidad-estudiantes">
+            {estudiantes.length} estudiantes
+          </div>
+
+        </div>
+
+        <div className="tabla-estudiantes">
 
           <table>
+
             <thead>
               <tr>
                 <th>Nombre</th>
                 <th>Apellido</th>
                 <th>Curso</th>
                 <th>Tutor</th>
-                <th>Teléfono</th>
                 <th>Acciones</th>
               </tr>
             </thead>
 
             <tbody>
-              {estudiantesFiltrados.map(
-                (estudiante) => (
+
+              {estudiantesFiltrados.length === 0 ? (
+
+                <tr>
+                  <td
+                    colSpan={5}
+                    className="sin-estudiantes"
+                  >
+                    No hay estudiantes registrados.
+                  </td>
+                </tr>
+
+              ) : (
+
+                estudiantesFiltrados.map((estudiante) => (
+
                   <tr key={estudiante.id}>
-                    <td>
-                      {estudiante.nombre}
-                    </td>
+
+                    <td>{estudiante.nombre}</td>
+
+                    <td>{estudiante.apellido}</td>
 
                     <td>
-                      {estudiante.apellido}
+                      <span className="curso-badge">
+                        {estudiante.curso}
+                      </span>
                     </td>
+
+                    <td>{estudiante.tutor}</td>
 
                     <td>
-                      {estudiante.curso}
+
+                      <div className="acciones">
+
+                        <button
+                          className="boton-editar"
+                          onClick={() =>
+                            editarEstudiante(estudiante)
+                          }
+                        >
+                          Editar
+                        </button>
+
+                        <button
+                          className="boton-eliminar"
+                          onClick={() =>
+                            eliminarEstudiante(estudiante.id)
+                          }
+                        >
+                          Eliminar
+                        </button>
+
+                      </div>
+
                     </td>
 
-                    <td>
-                      {estudiante.tutor}
-                    </td>
-
-                    <td>
-                      {estudiante.telefonoTutor ||
-                        "No registrado"}
-                    </td>
-
-                    <td>
-                      <button
-                        onClick={() =>
-                          editarEstudiante(
-                            estudiante
-                          )
-                        }
-                      >
-                        Editar
-                      </button>
-
-                      <button
-                        onClick={() =>
-                          eliminarEstudiante(
-                            estudiante.id
-                          )
-                        }
-                      >
-                        Eliminar
-                      </button>
-                    </td>
                   </tr>
-                )
+
+                ))
+
               )}
+
             </tbody>
+
           </table>
+
         </div>
+
       </main>
+
+      {mostrarFormulario && (
+
+        <div className="modal-fondo">
+
+          <div className="formulario-estudiante">
+
+            <h2>
+              {estudianteEditando
+                ? "Editar estudiante"
+                : "Nuevo estudiante"}
+            </h2>
+
+            <label>Nombre</label>
+
+            <input
+              type="text"
+              value={nombre}
+              onChange={(e) =>
+                setNombre(e.target.value)
+              }
+              placeholder="Nombre"
+            />
+
+            <label>Apellido</label>
+
+            <input
+              type="text"
+              value={apellido}
+              onChange={(e) =>
+                setApellido(e.target.value)
+              }
+              placeholder="Apellido"
+            />
+
+            <label>Curso</label>
+
+            <input
+              type="text"
+              value={curso}
+              onChange={(e) =>
+                setCurso(e.target.value)
+              }
+              placeholder="Ej. 1ro A"
+            />
+
+            <label>Tutor</label>
+
+            <input
+              type="text"
+              value={tutor}
+              onChange={(e) =>
+                setTutor(e.target.value)
+              }
+              placeholder="Nombre del tutor"
+            />
+
+            <div className="botones-formulario">
+
+              <button
+                className="boton-guardar"
+                onClick={guardarEstudiante}
+              >
+                Guardar
+              </button>
+
+              <button
+                className="boton-cancelar"
+                onClick={cerrarFormulario}
+              >
+                Cancelar
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      )}
+
     </div>
   );
 }

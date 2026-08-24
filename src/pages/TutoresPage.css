@@ -1,155 +1,337 @@
 .tutores-layout {
   min-height: 100vh;
-  background: #eef4fb;
+  background: #031a33;
 }
 
 .tutores-page {
   margin-left: 230px;
+
   min-height: 100vh;
+
   padding: 40px;
+
   box-sizing: border-box;
-  background: #eef4fb;
-  color: #123a6d;
+
+  background: #031a33;
+
+  color: white;
 }
 
-.tutores-page h1 {
+
+/* ENCABEZADO */
+
+.tutores-header {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  margin-bottom: 30px;
+}
+
+.tutores-header h1 {
   margin: 0;
-  font-size: 42px;
-  text-align: center;
-  color: #123a6d;
+
+  font-size: 32px;
+
+  color: white;
 }
 
-.tutores-page > p {
-  text-align: center;
-  color: #5f6b78;
-  margin-bottom: 25px;
+.tutores-header p {
+  margin-top: 8px;
+
+  color: #9eb4cc;
 }
+
+
+/* CANTIDAD */
+
+.cantidad-estudiantes {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  padding: 8px 25px;
+
+  border-left: 2px solid #f5c400;
+}
+
+.cantidad-estudiantes strong {
+  font-size: 25px;
+
+  color: #f5c400;
+}
+
+.cantidad-estudiantes span {
+  font-size: 12px;
+
+  color: #9eb4cc;
+}
+
 
 /* BUSCADOR */
 
-.buscador-tutores {
-  display: block;
-  width: 350px;
-  max-width: 90%;
-  margin: 0 auto 25px;
-  padding: 12px;
+.buscador-contenedor {
+  width: 400px;
+
+  max-width: 100%;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 0 14px;
+
+  margin-bottom: 20px;
+
   box-sizing: border-box;
 
-  background: white;
-  color: #333;
+  background: #082744;
 
-  border: 1px solid #d6e0ea;
-  border-radius: 8px;
+  border: 1px solid #315d87;
 
-  font-size: 15px;
-  outline: none;
+  border-radius: 7px;
 }
 
-.buscador-tutores:focus {
+.buscador-contenedor:focus-within {
   border-color: #f5c400;
 }
+
+.buscador-contenedor span {
+  font-size: 15px;
+}
+
+.buscador-tutores {
+  width: 100%;
+
+  padding: 12px 0;
+
+  border: none;
+
+  outline: none;
+
+  background: transparent;
+
+  color: white;
+
+  font-size: 14px;
+}
+
+.buscador-tutores::placeholder {
+  color: #7891aa;
+}
+
 
 /* TABLA */
 
 .tabla-tutores {
-  max-width: 1000px;
-  margin: auto;
-  padding: 25px;
-
-  background: white;
-  border-radius: 14px;
-
-  box-shadow: 0 8px 25px rgba(18, 58, 109, 0.12);
-}
-
-.tabla-tutores h2 {
-  margin-top: 0;
-  text-align: center;
-  color: #123a6d;
-}
-
-table {
   width: 100%;
+
+  background: #082744;
+
+  border: 1px solid #24476b;
+
+  border-radius: 10px;
+
+  overflow: hidden;
+}
+
+
+/* TITULO */
+
+.tabla-titulo {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  padding: 18px 20px;
+
+  border-bottom: 1px solid #24476b;
+}
+
+.tabla-titulo h2 {
+  margin: 0;
+
+  font-size: 17px;
+}
+
+.tabla-titulo span {
+  color: #9eb4cc;
+
+  font-size: 12px;
+}
+
+
+/* TABLA */
+
+.tabla-tutores table {
+  width: 100%;
+
   border-collapse: collapse;
-  margin-top: 20px;
 }
 
-th {
-  padding: 14px;
-  background: #123a6d;
-  color: white;
+.tabla-tutores th {
+  padding: 14px 15px;
+
+  background: #061f3a;
+
+  color: #f5c400;
+
   text-align: left;
+
+  font-size: 12px;
 }
 
-td {
-  padding: 13px;
-  color: #333;
-  border-bottom: 1px solid #e5e7eb;
+.tabla-tutores td {
+  padding: 14px 15px;
+
+  border-top: 1px solid #1c4265;
+
+  color: #dce7f3;
+
+  font-size: 13px;
 }
 
-tr:hover {
-  background: #f8fafc;
+.tabla-tutores tr:hover td {
+  background: #0b3158;
 }
+
+
+/* PARALELO */
+
+.paralelo {
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  width: 27px;
+
+  height: 27px;
+
+  border-radius: 5px;
+
+  background: #123f68;
+
+  color: #f5c400;
+
+  font-weight: bold;
+}
+
 
 /* BOTON VER */
 
 .boton-ver {
-  padding: 9px 15px;
-  border: none;
-  border-radius: 7px;
+  padding: 8px 12px;
 
-  background: #1769aa;
+  border: 1px solid #315d87;
+
+  border-radius: 5px;
+
+  background: #0b3158;
+
   color: white;
 
   cursor: pointer;
-  font-weight: bold;
+
+  font-size: 11px;
 }
 
 .boton-ver:hover {
-  background: #125887;
+  border-color: #f5c400;
+
+  color: #f5c400;
 }
+
 
 /* BOTON VOLVER */
 
 .boton-volver {
-  padding: 10px 18px;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 
-  border: none;
-  border-radius: 7px;
+  padding: 9px 14px;
 
-  background: #123a6d;
+  border: 1px solid #315d87;
+
+  border-radius: 6px;
+
+  background: transparent;
+
   color: white;
 
   cursor: pointer;
-  font-weight: bold;
+
+  font-size: 13px;
 }
 
 .boton-volver:hover {
-  background: #0d2d54;
+  background: #0b3158;
+
+  border-color: #f5c400;
+
+  color: #f5c400;
 }
+
 
 /* SIN ESTUDIANTES */
 
 .sin-estudiantes {
-  padding: 30px;
+  padding: 50px;
+
   text-align: center;
-  color: #6b7280;
+
+  color: #7891aa;
 }
 
-/* CELULAR */
+.sin-estudiantes div {
+  margin-bottom: 10px;
+
+  font-size: 35px;
+}
+
+.sin-estudiantes p {
+  margin: 0;
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 900px) {
+  .tutores-page {
+    padding: 30px;
+  }
+
+  .buscador-contenedor {
+    width: 100%;
+  }
+}
 
 @media (max-width: 700px) {
   .tutores-page {
-    margin-left: 180px;
-    padding: 25px;
+    margin-left: 0;
+
+    padding: 20px;
+  }
+
+  .tutores-header {
+    align-items: flex-start;
+
+    gap: 20px;
   }
 
   .tabla-tutores {
     overflow-x: auto;
   }
 
-  table {
+  .tabla-tutores table {
     min-width: 700px;
   }
 }

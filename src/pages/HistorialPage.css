@@ -1,0 +1,358 @@
+.historial-layout {
+  min-height: 100vh;
+  background: #031a33;
+}
+
+.historial-page {
+  margin-left: 230px;
+
+  min-height: 100vh;
+
+  padding: 40px;
+
+  box-sizing: border-box;
+
+  background: #031a33;
+
+  color: white;
+}
+
+
+/* ENCABEZADO */
+
+.historial-header {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  margin-bottom: 30px;
+}
+
+.historial-header h1 {
+  margin: 0;
+
+  font-size: 32px;
+
+  color: white;
+}
+
+.historial-header p {
+  margin-top: 8px;
+
+  color: #9eb4cc;
+}
+
+
+/* CANTIDAD */
+
+.cantidad-historial {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  padding: 8px 25px;
+
+  border-left: 2px solid #f5c400;
+}
+
+.cantidad-historial strong {
+  font-size: 25px;
+
+  color: #f5c400;
+}
+
+.cantidad-historial span {
+  font-size: 12px;
+
+  color: #9eb4cc;
+}
+
+
+/* CONTROLES */
+
+.historial-controles {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  gap: 15px;
+
+  margin-bottom: 20px;
+}
+
+
+/* BUSCADOR */
+
+.buscador-historial {
+  width: 450px;
+
+  max-width: 100%;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 0 14px;
+
+  box-sizing: border-box;
+
+  background: #082744;
+
+  border: 1px solid #315d87;
+
+  border-radius: 7px;
+}
+
+.buscador-historial:focus-within {
+  border-color: #f5c400;
+}
+
+.buscador-historial input {
+  width: 100%;
+
+  padding: 12px 0;
+
+  border: none;
+
+  outline: none;
+
+  background: transparent;
+
+  color: white;
+
+  font-size: 14px;
+}
+
+.buscador-historial input::placeholder {
+  color: #7891aa;
+}
+
+
+/* BOTON LIMPIAR */
+
+.boton-limpiar {
+  padding: 10px 15px;
+
+  border: 1px solid #743b3b;
+
+  border-radius: 6px;
+
+  background: #4d2020;
+
+  color: #ffb5b5;
+
+  cursor: pointer;
+
+  font-size: 12px;
+}
+
+.boton-limpiar:hover {
+  background: #6b2929;
+
+  border-color: #ff7777;
+}
+
+
+/* TABLA */
+
+.tabla-historial {
+  width: 100%;
+
+  background: #082744;
+
+  border: 1px solid #24476b;
+
+  border-radius: 10px;
+
+  overflow: hidden;
+}
+
+
+/* TITULO TABLA */
+
+.tabla-titulo {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  padding: 18px 20px;
+
+  border-bottom: 1px solid #24476b;
+}
+
+.tabla-titulo h2 {
+  margin: 0;
+
+  font-size: 17px;
+}
+
+.tabla-titulo span {
+  color: #9eb4cc;
+
+  font-size: 12px;
+}
+
+
+/* TABLA */
+
+.tabla-historial table {
+  width: 100%;
+
+  border-collapse: collapse;
+}
+
+.tabla-historial th {
+  padding: 14px 15px;
+
+  background: #061f3a;
+
+  color: #f5c400;
+
+  text-align: left;
+
+  font-size: 12px;
+}
+
+.tabla-historial td {
+  padding: 14px 15px;
+
+  border-top: 1px solid #1c4265;
+
+  color: #dce7f3;
+
+  font-size: 13px;
+}
+
+.tabla-historial tr:hover td {
+  background: #0b3158;
+}
+
+
+/* ASIENTO */
+
+.asiento-historial {
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  min-width: 35px;
+
+  padding: 6px 8px;
+
+  border-radius: 5px;
+
+  background: #123f68;
+
+  color: #f5c400;
+
+  font-weight: bold;
+}
+
+
+/* ACCIONES */
+
+.accion {
+  display: inline-block;
+
+  padding: 5px 9px;
+
+  border-radius: 5px;
+
+  font-size: 11px;
+
+  font-weight: bold;
+}
+
+.accion.asignacion {
+  background: #153f34;
+
+  color: #65d6ad;
+}
+
+.accion.liberacion {
+  background: #4d2929;
+
+  color: #ff9b9b;
+}
+
+
+/* HISTORIAL VACIO */
+
+.historial-vacio {
+  padding: 70px 20px;
+
+  text-align: center;
+
+  color: #7891aa;
+}
+
+.historial-vacio div {
+  font-size: 40px;
+
+  margin-bottom: 10px;
+}
+
+.historial-vacio h3 {
+  margin: 0 0 8px;
+
+  color: white;
+}
+
+.historial-vacio p {
+  margin: 0;
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 900px) {
+
+  .historial-page {
+    padding: 30px;
+  }
+
+  .historial-controles {
+    flex-direction: column;
+
+    align-items: stretch;
+  }
+
+  .buscador-historial {
+    width: 100%;
+  }
+
+}
+
+@media (max-width: 700px) {
+
+  .historial-page {
+    margin-left: 0;
+
+    padding: 20px;
+  }
+
+  .historial-header {
+    align-items: flex-start;
+  }
+
+  .tabla-historial {
+    overflow-x: auto;
+  }
+
+  .tabla-historial table {
+    min-width: 850px;
+  }
+
+}

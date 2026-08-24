@@ -1,63 +1,121 @@
 .home {
   min-height: 100vh;
-  background: #eef4fb;
+  background: #031a33;
+  color: white;
 }
 
 .content {
-  margin-left: 230px;
-  padding: 50px;
+  margin-left: 220px;
   min-height: 100vh;
+  padding: 0;
+}
+
+.inicio-fondo {
+  min-height: 100vh;
+  padding: 55px 45px;
   box-sizing: border-box;
+
+  background:
+    linear-gradient(
+      rgba(3, 26, 51, 0.72),
+      rgba(3, 26, 51, 0.90)
+    ),
+    url("/don-bosco.png");
+
+  background-size: cover;
+  background-position: center;
+
+  position: relative;
 }
 
-.content h1 {
-  color: #123a6d;
-  text-align: center;
-  font-size: 40px;
+.inicio-texto {
+  margin-bottom: 35px;
 }
 
-.content > p {
-  text-align: center;
-  color: #5f6b78;
-  font-size: 18px;
+.inicio-texto h1 {
+  margin: 0;
+  font-size: 32px;
+  color: white;
 }
 
-.cards {
+.inicio-texto p {
+  margin-top: 8px;
+  color: #f5c400;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.resumen {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 25px;
-  max-width: 900px;
-  margin: 40px auto;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  max-width: 1050px;
 }
 
-.card {
-  background: white;
-  padding: 30px;
-  border-radius: 14px;
+.resumen-card {
+  min-height: 155px;
+  padding: 18px;
+
+  border: 1px solid #315d87;
+  border-radius: 8px;
+
+  background: rgba(5, 35, 65, 0.78);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
   text-align: center;
-  box-shadow: 0 8px 25px rgba(18, 58, 109, 0.12);
+
+  backdrop-filter: blur(3px);
+
+  transition: 0.2s;
 }
 
-.card h3 {
-  color: #123a6d;
-  margin-top: 0;
+.resumen-card:hover {
+  border-color: #f5c400;
+  transform: translateY(-3px);
 }
 
-.card p {
-  color: #5f6b78;
+.icono-card {
+  font-size: 28px;
+  margin-bottom: 8px;
 }
 
-@media (max-width: 700px) {
-  .sidebar {
-    width: 180px;
+.resumen-card h3 {
+  margin: 0 0 8px;
+  font-size: 13px;
+  color: white;
+}
+
+.resumen-card strong {
+  font-size: 30px;
+  color: white;
+}
+
+.resumen-card span {
+  margin-top: 3px;
+  font-size: 11px;
+  color: #b3c5d8;
+}
+
+@media (max-width: 1000px) {
+  .resumen {
+    grid-template-columns: repeat(2, 1fr);
   }
+}
 
+@media (max-width: 600px) {
   .content {
-    margin-left: 180px;
-    padding: 25px;
+    margin-left: 0;
   }
 
-  .cards {
+  .inicio-fondo {
+    padding: 30px 20px;
+  }
+
+  .resumen {
     grid-template-columns: 1fr;
   }
 }

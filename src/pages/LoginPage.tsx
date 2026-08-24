@@ -6,13 +6,20 @@ import "./LoginPage.css";
 function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const navigate = useNavigate();
 
   async function handleLogin() {
     const user = await login(email, password);
 
     if (user) {
+      localStorage.setItem(
+        "usuarioActual",
+        JSON.stringify(user)
+      );
+
       alert("Bienvenido " + user.nombre);
+
       navigate("/home");
     } else {
       alert("Correo o contraseña incorrectos");
@@ -25,7 +32,10 @@ function LoginPage() {
 
         <div className="login-header">
           <h1>Bienvenido</h1>
-          <p>Sistema de asignación de asientos</p>
+
+          <p>
+            Sistema de asignación de asientos
+          </p>
         </div>
 
         <div className="login-form">
@@ -36,7 +46,9 @@ function LoginPage() {
             type="email"
             placeholder="Ingrese su correo"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) =>
+              setEmail(e.target.value)
+            }
           />
 
           <label>Contraseña</label>
@@ -45,7 +57,9 @@ function LoginPage() {
             type="password"
             placeholder="Ingrese su contraseña"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) =>
+              setPassword(e.target.value)
+            }
           />
 
           <button onClick={handleLogin}>
@@ -53,6 +67,7 @@ function LoginPage() {
           </button>
 
         </div>
+
       </div>
     </div>
   );

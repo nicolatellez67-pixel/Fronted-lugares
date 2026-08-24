@@ -1,176 +1,395 @@
 .cursos-layout {
   min-height: 100vh;
-  background: #eef4fb;
+  background: #031a33;
+  color: white;
 }
 
 .cursos-page {
-  margin-left: 230px;
+  margin-left: 220px;
   min-height: 100vh;
-  padding: 40px;
+  padding: 45px;
   box-sizing: border-box;
-  background: #eef4fb;
-  color: #123a6d;
 }
 
-.cursos-page h1 {
+
+/* ENCABEZADO */
+
+.cursos-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.cursos-header h1 {
   margin: 0;
-  font-size: 42px;
-  text-align: center;
-  color: #123a6d;
+  font-size: 32px;
 }
 
-.cursos-page > p {
-  text-align: center;
-  color: #5f6b78;
-  margin-bottom: 25px;
+.cursos-header p {
+  margin-top: 8px;
+  color: #9eb4cc;
 }
+
+
+/* TOTAL */
+
+.total-cursos {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding: 10px 25px;
+
+  border-left: 2px solid #f5c400;
+}
+
+.total-cursos strong {
+  font-size: 25px;
+  color: #f5c400;
+}
+
+.total-cursos span {
+  font-size: 12px;
+  color: #9eb4cc;
+}
+
 
 /* BUSCADOR */
 
-.buscador-cursos {
-  display: block;
-  width: 350px;
-  max-width: 90%;
-  margin: 0 auto 25px;
-  padding: 12px;
+.buscador-contenedor {
+  width: 400px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 0 14px;
+
+  margin-bottom: 20px;
+
+  background: #082744;
+
+  border: 1px solid #315d87;
+
+  border-radius: 7px;
+
   box-sizing: border-box;
-
-  background: white;
-  color: #333;
-
-  border: 1px solid #d6e0ea;
-  border-radius: 8px;
-
-  font-size: 15px;
-  outline: none;
 }
 
-.buscador-cursos:focus {
+.buscador-contenedor:focus-within {
   border-color: #f5c400;
 }
+
+.buscador-contenedor span {
+  font-size: 15px;
+}
+
+.buscador-cursos {
+  width: 100%;
+
+  padding: 12px 0;
+
+  border: none;
+
+  outline: none;
+
+  background: transparent;
+
+  color: white;
+}
+
+.buscador-cursos::placeholder {
+  color: #7891aa;
+}
+
 
 /* TABLA */
 
 .tabla-cursos {
-  max-width: 1000px;
-  margin: auto;
-  padding: 25px;
-
-  background: white;
-  border-radius: 14px;
-
-  box-shadow: 0 8px 25px rgba(18, 58, 109, 0.12);
-}
-
-.tabla-cursos h2 {
-  margin-top: 0;
-  text-align: center;
-  color: #123a6d;
-}
-
-table {
   width: 100%;
+
+  background: #082744;
+
+  border: 1px solid #24476b;
+
+  border-radius: 10px;
+
+  overflow: hidden;
+}
+
+
+/* TITULO TABLA */
+
+.tabla-titulo {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 18px 20px;
+
+  border-bottom: 1px solid #24476b;
+}
+
+.tabla-titulo h2 {
+  margin: 0;
+
+  font-size: 17px;
+}
+
+.tabla-titulo span {
+  font-size: 12px;
+
+  color: #9eb4cc;
+}
+
+
+/* TABLA */
+
+.tabla-cursos table {
+  width: 100%;
+
   border-collapse: collapse;
-  margin-top: 20px;
 }
 
-th {
-  padding: 14px;
-  background: #123a6d;
-  color: white;
+.tabla-cursos th {
+  padding: 14px 15px;
+
   text-align: left;
+
+  background: #061f3a;
+
+  color: #f5c400;
+
+  font-size: 12px;
 }
 
-td {
-  padding: 13px;
-  color: #333;
-  border-bottom: 1px solid #e5e7eb;
+.tabla-cursos td {
+  padding: 14px 15px;
+
+  border-top: 1px solid #1c4265;
+
+  color: #dce7f3;
+
+  font-size: 13px;
 }
 
-tr:hover {
-  background: #f8fafc;
+.tabla-cursos tr:hover td {
+  background: #0b3158;
 }
+
+
+/* PARALELO */
+
+.paralelo {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  width: 27px;
+  height: 27px;
+
+  border-radius: 5px;
+
+  background: #123f68;
+
+  color: #f5c400;
+
+  font-weight: bold;
+}
+
+
+/* LIBRES */
+
+.libres {
+  color: #7ed6a1;
+
+  font-weight: bold;
+}
+
+.libres.lleno {
+  color: #ff8585;
+}
+
 
 /* BOTON VER */
 
 .boton-ver {
-  padding: 9px 15px;
+  padding: 8px 12px;
 
-  border: none;
-  border-radius: 7px;
+  border: 1px solid #315d87;
 
-  background: #1769aa;
+  border-radius: 5px;
+
+  background: #0b3158;
+
   color: white;
 
   cursor: pointer;
-  font-weight: bold;
+
+  font-size: 11px;
 }
 
 .boton-ver:hover {
-  background: #125887;
+  border-color: #f5c400;
+
+  color: #f5c400;
 }
 
-/* BOTON VOLVER */
+
+/* VISTA DEL CURSO */
 
 .boton-volver {
-  padding: 10px 18px;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 
-  border: none;
-  border-radius: 7px;
+  padding: 9px 14px;
 
-  background: #123a6d;
+  border: 1px solid #315d87;
+
+  border-radius: 6px;
+
+  background: transparent;
+
   color: white;
 
   cursor: pointer;
-  font-weight: bold;
 }
 
 .boton-volver:hover {
-  background: #0d2d54;
+  background: #0b3158;
+
+  border-color: #f5c400;
+
+  color: #f5c400;
 }
 
-/* RESUMEN */
+.curso-header {
+  margin-bottom: 25px;
+}
+
+.curso-header h1 {
+  margin: 0;
+
+  font-size: 32px;
+}
+
+.curso-header p {
+  margin-top: 8px;
+
+  color: #9eb4cc;
+}
+
+
+/* RESUMEN DEL CURSO */
 
 .resumen-curso {
-  max-width: 400px;
-  margin: 25px auto;
-  padding: 20px;
+  display: grid;
 
-  background: white;
-  border-radius: 14px;
+  grid-template-columns: repeat(3, 1fr);
 
-  text-align: center;
+  gap: 15px;
 
-  box-shadow: 0 8px 25px rgba(18, 58, 109, 0.12);
+  margin-bottom: 25px;
 }
 
-.resumen-curso h2 {
-  margin: 0;
-  color: #123a6d;
+.resumen-curso-card {
+  min-height: 120px;
+
+  padding: 18px;
+
+  box-sizing: border-box;
+
+  background: #082744;
+
+  border: 1px solid #24476b;
+
+  border-radius: 9px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: center;
 }
+
+.resumen-curso-card span {
+  font-size: 22px;
+
+  margin-bottom: 8px;
+}
+
+.resumen-curso-card p {
+  margin: 0 0 5px;
+
+  color: #9eb4cc;
+
+  font-size: 12px;
+}
+
+.resumen-curso-card strong {
+  font-size: 25px;
+
+  color: #f5c400;
+}
+
 
 /* SIN ESTUDIANTES */
 
 .sin-estudiantes {
-  padding: 30px;
+  padding: 50px;
+
   text-align: center;
-  color: #6b7280;
+
+  color: #7891aa;
 }
 
-/* CELULAR */
+.sin-estudiantes div {
+  font-size: 35px;
 
-@media (max-width: 700px) {
+  margin-bottom: 10px;
+}
+
+.sin-estudiantes p {
+  margin: 0;
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 900px) {
   .cursos-page {
-    margin-left: 180px;
-    padding: 25px;
+    padding: 30px;
+  }
+
+  .resumen-curso {
+    grid-template-columns: 1fr;
+  }
+
+  .buscador-contenedor {
+    width: 100%;
+  }
+}
+
+@media (max-width: 650px) {
+  .cursos-page {
+    margin-left: 0;
+    padding: 20px;
+  }
+
+  .cursos-header {
+    align-items: flex-start;
+
+    gap: 20px;
   }
 
   .tabla-cursos {
     overflow-x: auto;
   }
 
-  table {
+  .tabla-cursos table {
     min-width: 700px;
   }
 }
