@@ -14,9 +14,12 @@ import HistorialPage from "../pages/HistorialPage";
 import ConfiguracionPage from "../pages/ConfiguracionPage";
 import LoginPage from "../pages/LoginPage";
 
+import ProtectedRoute from "./ProtectedRoute";
+
 function AppRoutes() {
   return (
     <BrowserRouter>
+
       <Routes>
 
         <Route
@@ -31,40 +34,75 @@ function AppRoutes() {
 
         <Route
           path="/home"
-          element={<HomePage />}
+          element={
+            <ProtectedRoute>
+              <HomePage />
+            </ProtectedRoute>
+          }
         />
 
         <Route
           path="/estudiantes"
-          element={<EstudiantesPage />}
+          element={
+            <ProtectedRoute>
+              <EstudiantesPage />
+            </ProtectedRoute>
+          }
         />
 
         <Route
           path="/cursos"
-          element={<CursosPage />}
+          element={
+            <ProtectedRoute>
+              <CursosPage />
+            </ProtectedRoute>
+          }
         />
 
         <Route
           path="/asientos"
-          element={<AsientosPage />}
+          element={
+            <ProtectedRoute>
+              <AsientosPage />
+            </ProtectedRoute>
+          }
         />
 
         <Route
           path="/tutores"
-          element={<TutoresPage />}
+          element={
+            <ProtectedRoute>
+              <TutoresPage />
+            </ProtectedRoute>
+          }
         />
 
         <Route
           path="/historial"
-          element={<HistorialPage />}
+          element={
+            <ProtectedRoute>
+              <HistorialPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* SOLO ADMINISTRADOR */}
+        <Route
+          path="/configuracion"
+          element={
+            <ProtectedRoute soloAdmin={true}>
+              <ConfiguracionPage />
+            </ProtectedRoute>
+          }
         />
 
         <Route
-          path="/configuracion"
-          element={<ConfiguracionPage />}
+          path="*"
+          element={<Navigate to="/home" replace />}
         />
 
       </Routes>
+
     </BrowserRouter>
   );
 }

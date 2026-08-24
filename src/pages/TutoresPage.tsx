@@ -1,7 +1,5 @@
-import { useState } from "react";
-
+import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
-
 import "./TutoresPage.css";
 
 type Curso = {
@@ -51,9 +49,36 @@ function TutoresPage() {
 
   const [busqueda, setBusqueda] = useState("");
 
-  const estudiantes: Estudiante[] = JSON.parse(
-    localStorage.getItem("estudiantes") || "[]"
-  );
+  const [estudiantes, setEstudiantes] =
+    useState<Estudiante[]>(() => {
+      const datos =
+        localStorage.getItem("estudiantes");
+
+      return datos ? JSON.parse(datos) : [];
+    });
+
+  useEffect(() => {
+    function actualizarEstudiantes() {
+      const datos =
+        localStorage.getItem("estudiantes");
+
+      setEstudiantes(
+        datos ? JSON.parse(datos) : []
+      );
+    }
+
+    window.addEventListener(
+      "estudiantesActualizados",
+      actualizarEstudiantes
+    );
+
+    return () => {
+      window.removeEventListener(
+        "estudiantesActualizados",
+        actualizarEstudiantes
+      );
+    };
+  }, []);
 
   function quitarTildes(texto: string) {
     return texto
@@ -62,41 +87,47 @@ function TutoresPage() {
       .replace(/[\u0300-\u036f]/g, "");
   }
 
-  function obtenerEstudiantesDelCurso(curso: Curso) {
-    return estudiantes.filter(
-      (estudiante) =>
-        quitarTildes(estudiante.curso) ===
-        quitarTildes(`${curso.grado} ${curso.paralelo}`)
-    );
-  }
+  function obtenerEstudiantesDelCurso(
+    curso: Curso
+  ) {
+    const nombreCurso = quitarTildes(
+      `${curso.grado} ${curso.paralelo}`
+    ).trim();
 
-  /*
-   * VISTA DEL CURSO
-   */
+    return estudiantes.filter((estudiante) => {
+      const cursoEstudiante = quitarTildes(
+        estudiante.curso
+      ).trim();
+
+      return cursoEstudiante === nombreCurso;
+    });
+  }
 
   if (cursoSeleccionado) {
     const estudiantesDelCurso =
-      obtenerEstudiantesDelCurso(cursoSeleccionado);
+      obtenerEstudiantesDelCurso(
+        cursoSeleccionado
+      );
 
     return (
       <div className="tutores-layout">
-
         <Sidebar />
 
         <main className="tutores-page">
-
           <button
             className="boton-volver"
-            onClick={() => setCursoSeleccionado(null)}
+            onClick={() =>
+              setCursoSeleccionado(null)
+            }
           >
             ← Volver a cursos
           </button>
 
           <div className="tutores-header">
-
             <div>
               <h1>
-                Tutores - {cursoSeleccionado.grado}{" "}
+                Tutores -{" "}
+                {cursoSeleccionado.grado}{" "}
                 {cursoSeleccionado.paralelo}
               </h1>
 
@@ -107,67 +138,49 @@ function TutoresPage() {
             </div>
 
             <div className="cantidad-estudiantes">
-
               <strong>
                 {estudiantesDelCurso.length}
               </strong>
 
-              <span>
-                estudiantes
-              </span>
-
+              <span>estudiantes</span>
             </div>
-
           </div>
 
           <div className="tabla-tutores">
-
             <div className="tabla-titulo">
-
               <h2>
                 Estudiantes y tutores
               </h2>
 
               <span>
-                {estudiantesDelCurso.length} registrados
+                {estudiantesDelCurso.length}{" "}
+                registrados
               </span>
-
             </div>
 
             {estudiantesDelCurso.length === 0 ? (
-
               <div className="sin-estudiantes">
-
                 <div>👥</div>
 
                 <p>
                   No hay estudiantes registrados
                   en este curso.
                 </p>
-
               </div>
-
             ) : (
-
               <table>
-
                 <thead>
-
                   <tr>
                     <th>Estudiante</th>
                     <th>Tutor</th>
                     <th>Teléfono</th>
                   </tr>
-
                 </thead>
 
                 <tbody>
-
                   {estudiantesDelCurso.map(
                     (estudiante) => (
-
                       <tr key={estudiante.id}>
-
                         <td>
                           <strong>
                             {estudiante.nombre}{" "}
@@ -184,52 +197,38 @@ function TutoresPage() {
                             ? estudiante.telefonoTutor
                             : "No registrado"}
                         </td>
-
                       </tr>
-
                     )
                   )}
-
                 </tbody>
-
               </table>
-
             )}
-
           </div>
-
         </main>
-
       </div>
     );
   }
 
-  /*
-   * LISTA DE CURSOS
-   */
+  const cursosFiltrados = cursos.filter(
+    (curso) => {
+      const texto =
+        quitarTildes(busqueda.trim());
 
-  const cursosFiltrados = cursos.filter((curso) => {
+      const nombreCurso =
+        quitarTildes(
+          `${curso.grado} ${curso.paralelo}`
+        );
 
-    const texto =
-      quitarTildes(busqueda.trim());
-
-    const nombreCurso =
-      quitarTildes(
-        `${curso.grado} ${curso.paralelo}`
-      );
-
-    return nombreCurso.includes(texto);
-  });
+      return nombreCurso.includes(texto);
+    }
+  );
 
   return (
     <div className="tutores-layout">
-
       <Sidebar />
 
       <main className="tutores-page">
-
         <div className="tutores-header">
-
           <div>
             <h1>Tutores</h1>
 
@@ -240,22 +239,13 @@ function TutoresPage() {
           </div>
 
           <div className="cantidad-estudiantes">
+            <strong>{cursos.length}</strong>
 
-            <strong>
-              {cursos.length}
-            </strong>
-
-            <span>
-              cursos
-            </span>
-
+            <span>cursos</span>
           </div>
-
         </div>
 
-
         <div className="buscador-contenedor">
-
           <span>🔎</span>
 
           <input
@@ -267,51 +257,36 @@ function TutoresPage() {
               setBusqueda(e.target.value)
             }
           />
-
         </div>
 
-
         <div className="tabla-tutores">
-
           <div className="tabla-titulo">
-
-            <h2>
-              Lista de cursos
-            </h2>
+            <h2>Lista de cursos</h2>
 
             <span>
               {cursosFiltrados.length} resultados
             </span>
-
           </div>
 
-
           <table>
-
             <thead>
-
               <tr>
                 <th>Grado</th>
                 <th>Paralelo</th>
                 <th>Estudiantes</th>
                 <th>Acción</th>
               </tr>
-
             </thead>
 
             <tbody>
-
               {cursosFiltrados.map((curso) => {
-
                 const cantidad =
                   obtenerEstudiantesDelCurso(
                     curso
                   ).length;
 
                 return (
-
                   <tr key={curso.id}>
-
                     <td>
                       <strong>
                         {curso.grado}
@@ -324,12 +299,9 @@ function TutoresPage() {
                       </span>
                     </td>
 
-                    <td>
-                      {cantidad}
-                    </td>
+                    <td>{cantidad}</td>
 
                     <td>
-
                       <button
                         className="boton-ver"
                         onClick={() =>
@@ -340,22 +312,14 @@ function TutoresPage() {
                       >
                         Ver tutores →
                       </button>
-
                     </td>
-
                   </tr>
-
                 );
               })}
-
             </tbody>
-
           </table>
-
         </div>
-
       </main>
-
     </div>
   );
 }

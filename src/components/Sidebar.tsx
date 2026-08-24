@@ -1,7 +1,9 @@
 import { useEffect, useRef } from "react";
 import { NavLink } from "react-router-dom";
-import { getUsuario } from "../repositories/authRepository";
-
+import {
+  getUsuario,
+  logout,
+} from "../repositories/authRepository";
 import "./Sidebar.css";
 
 function Sidebar() {
@@ -23,33 +25,24 @@ function Sidebar() {
     funcion = "Maestro";
   }
 
-
-  /* =========================
-     RECORDAR POSICIÓN
-     ========================= */
-
   const menuRef = useRef<HTMLElement | null>(null);
 
-
-  /* RECUPERAR POSICIÓN */
-
+  // Recuperar posición del menú
   useEffect(() => {
-    const posicionGuardada = sessionStorage.getItem(
-      "sidebarScroll"
-    );
+    const posicionGuardada =
+      sessionStorage.getItem("sidebarScroll");
 
     if (menuRef.current && posicionGuardada) {
       requestAnimationFrame(() => {
         if (menuRef.current) {
-          menuRef.current.scrollTop = Number(posicionGuardada);
+          menuRef.current.scrollTop =
+            Number(posicionGuardada);
         }
       });
     }
   }, []);
 
-
-  /* GUARDAR POSICIÓN */
-
+  // Guardar posición del menú
   function guardarPosicion() {
     if (menuRef.current) {
       sessionStorage.setItem(
@@ -59,24 +52,23 @@ function Sidebar() {
     }
   }
 
+  // Cerrar sesión
+  function cerrarSesion() {
+    logout();
+    window.location.href = "/login";
+  }
 
   return (
     <aside className="sidebar">
 
-
-      {/* =========================
-          ENCABEZADO
-          ========================= */}
-
+      {/* ENCABEZADO */}
       <div className="sidebar-header">
 
         <div className="logo-don-bosco">
-
           <img
             src="/escudo-don-bosco.png"
             alt="Escudo Don Bosco"
           />
-
         </div>
 
         <h2>DON BOSCO</h2>
@@ -90,10 +82,7 @@ function Sidebar() {
       </div>
 
 
-      {/* =========================
-          MENÚ
-          ========================= */}
-
+      {/* MENÚ */}
       <nav
         className="sidebar-nav"
         ref={menuRef}
@@ -172,49 +161,49 @@ function Sidebar() {
         </NavLink>
 
 
-        <NavLink
-          to="/configuracion"
-          className={({ isActive }) =>
-            isActive ? "active" : ""
-          }
-          onClick={guardarPosicion}
-        >
-          <span className="icono">⚙</span>
-          <span>Configuración</span>
-        </NavLink>
+        {/* CONFIGURACIÓN SOLO PARA ADMIN */}
+        {usuario?.rol === "ADMIN" && (
+          <NavLink
+            to="/configuracion"
+            className={({ isActive }) =>
+              isActive ? "active" : ""
+            }
+            onClick={guardarPosicion}
+          >
+            <span className="icono">⚙</span>
+            <span>Configuración</span>
+          </NavLink>
+        )}
 
       </nav>
 
 
-      {/* =========================
-          USUARIO
-          ========================= */}
-
+      {/* USUARIO */}
       <div className="usuario-sidebar">
 
         <div className="usuario-logo">
-
           <img
             src="/escudo-don-bosco.png"
             alt="Escudo Don Bosco"
           />
-
         </div>
 
-
         <div className="usuario-datos">
+          <strong>{nombre}</strong>
 
-          <strong>
-            {nombre}
-          </strong>
-
-          <span>
-            {funcion}
-          </span>
-
+          <span>{funcion}</span>
         </div>
 
       </div>
+
+
+      {/* CERRAR SESIÓN */}
+      <button
+        className="boton-cerrar-sesion"
+        onClick={cerrarSesion}
+      >
+        🚪 Cerrar sesión
+      </button>
 
     </aside>
   );

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import "./CursosPage.css";
 
@@ -14,6 +14,7 @@ type Estudiante = {
   apellido: string;
   curso: string;
   tutor: string;
+  telefonoTutor: string;
 };
 
 const CAPACIDAD_CURSO = 35;
@@ -22,18 +23,23 @@ const cursos: Curso[] = [
   { id: 1, grado: "1ro", paralelo: "A" },
   { id: 2, grado: "1ro", paralelo: "B" },
   { id: 3, grado: "1ro", paralelo: "C" },
+
   { id: 4, grado: "2do", paralelo: "A" },
   { id: 5, grado: "2do", paralelo: "B" },
   { id: 6, grado: "2do", paralelo: "C" },
+
   { id: 7, grado: "3ro", paralelo: "A" },
   { id: 8, grado: "3ro", paralelo: "B" },
   { id: 9, grado: "3ro", paralelo: "C" },
+
   { id: 10, grado: "4to", paralelo: "A" },
   { id: 11, grado: "4to", paralelo: "B" },
   { id: 12, grado: "4to", paralelo: "C" },
+
   { id: 13, grado: "5to", paralelo: "A" },
   { id: 14, grado: "5to", paralelo: "B" },
   { id: 15, grado: "5to", paralelo: "C" },
+
   { id: 16, grado: "6to", paralelo: "A" },
   { id: 17, grado: "6to", paralelo: "B" },
   { id: 18, grado: "6to", paralelo: "C" },
@@ -45,9 +51,35 @@ function CursosPage() {
   const [cursoSeleccionado, setCursoSeleccionado] =
     useState<Curso | null>(null);
 
-  const estudiantes: Estudiante[] = JSON.parse(
-    localStorage.getItem("estudiantes") || "[]"
-  );
+  const [estudiantes, setEstudiantes] =
+    useState<Estudiante[]>(() => {
+      const datos = localStorage.getItem("estudiantes");
+
+      return datos ? JSON.parse(datos) : [];
+    });
+
+  useEffect(() => {
+    function actualizarEstudiantes() {
+      const datos =
+        localStorage.getItem("estudiantes");
+
+      setEstudiantes(
+        datos ? JSON.parse(datos) : []
+      );
+    }
+
+    window.addEventListener(
+      "estudiantesActualizados",
+      actualizarEstudiantes
+    );
+
+    return () => {
+      window.removeEventListener(
+        "estudiantesActualizados",
+        actualizarEstudiantes
+      );
+    };
+  }, []);
 
   function quitarTildes(texto: string) {
     return texto
@@ -57,15 +89,23 @@ function CursosPage() {
   }
 
   function obtenerEstudiantesDelCurso(curso: Curso) {
-    return estudiantes.filter(
-      (estudiante) =>
-        quitarTildes(estudiante.curso) ===
-        quitarTildes(`${curso.grado} ${curso.paralelo}`)
-    );
+    const nombreCurso = quitarTildes(
+      `${curso.grado} ${curso.paralelo}`
+    ).trim();
+
+    return estudiantes.filter((estudiante) => {
+      const cursoEstudiante = quitarTildes(
+        estudiante.curso
+      ).trim();
+
+      return cursoEstudiante === nombreCurso;
+    });
   }
 
   const cursosFiltrados = cursos.filter((curso) => {
-    const texto = quitarTildes(busqueda.trim());
+    const texto = quitarTildes(
+      busqueda.trim()
+    );
 
     const nombreCurso = quitarTildes(
       `${curso.grado} ${curso.paralelo}`
@@ -74,33 +114,33 @@ function CursosPage() {
     return nombreCurso.includes(texto);
   });
 
-  /*
-   * VISTA DEL CURSO
-   */
-
   if (cursoSeleccionado) {
     const estudiantesDelCurso =
-      obtenerEstudiantesDelCurso(cursoSeleccionado);
+      obtenerEstudiantesDelCurso(
+        cursoSeleccionado
+      );
 
-    const cantidad = estudiantesDelCurso.length;
+    const cantidad =
+      estudiantesDelCurso.length;
 
-    const asientosLibres = CAPACIDAD_CURSO - cantidad;
+    const asientosLibres =
+      CAPACIDAD_CURSO - cantidad;
 
     return (
       <div className="cursos-layout">
         <Sidebar />
 
         <main className="cursos-page">
-
           <button
             className="boton-volver"
-            onClick={() => setCursoSeleccionado(null)}
+            onClick={() =>
+              setCursoSeleccionado(null)
+            }
           >
             ← Volver a cursos
           </button>
 
           <div className="curso-header">
-
             <div>
               <h1>
                 {cursoSeleccionado.grado}{" "}
@@ -111,11 +151,9 @@ function CursosPage() {
                 Curso de secundaria · Colegio Don Bosco
               </p>
             </div>
-
           </div>
 
           <div className="resumen-curso">
-
             <div className="resumen-curso-card">
               <span>👥</span>
               <p>Estudiantes</p>
@@ -125,19 +163,21 @@ function CursosPage() {
             <div className="resumen-curso-card">
               <span>🎓</span>
               <p>Capacidad</p>
-              <strong>{CAPACIDAD_CURSO}</strong>
+              <strong>
+                {CAPACIDAD_CURSO}
+              </strong>
             </div>
 
             <div className="resumen-curso-card">
               <span>🪑</span>
               <p>Asientos libres</p>
-              <strong>{asientosLibres}</strong>
+              <strong>
+                {asientosLibres}
+              </strong>
             </div>
-
           </div>
 
           <div className="tabla-cursos">
-
             <div className="tabla-titulo">
               <h2>Estudiantes del curso</h2>
 
@@ -147,74 +187,70 @@ function CursosPage() {
             </div>
 
             {estudiantesDelCurso.length === 0 ? (
-
               <div className="sin-estudiantes">
                 <div>👥</div>
 
                 <p>
-                  No hay estudiantes registrados en este curso.
+                  No hay estudiantes registrados
+                  en este curso.
                 </p>
               </div>
-
             ) : (
-
               <table>
-
                 <thead>
                   <tr>
                     <th>Nombre</th>
                     <th>Apellido</th>
                     <th>Tutor</th>
+                    <th>Teléfono</th>
                   </tr>
                 </thead>
 
                 <tbody>
+                  {estudiantesDelCurso.map(
+                    (estudiante) => (
+                      <tr key={estudiante.id}>
+                        <td>
+                          {estudiante.nombre}
+                        </td>
 
-                  {estudiantesDelCurso.map((estudiante) => (
+                        <td>
+                          {estudiante.apellido}
+                        </td>
 
-                    <tr key={estudiante.id}>
+                        <td>
+                          {estudiante.tutor}
+                        </td>
 
-                      <td>{estudiante.nombre}</td>
-
-                      <td>{estudiante.apellido}</td>
-
-                      <td>{estudiante.tutor}</td>
-
-                    </tr>
-
-                  ))}
-
+                        <td>
+                          {estudiante.telefonoTutor
+                            ? estudiante.telefonoTutor
+                            : "No registrado"}
+                        </td>
+                      </tr>
+                    )
+                  )}
                 </tbody>
-
               </table>
-
             )}
-
           </div>
-
         </main>
       </div>
     );
   }
 
-  /*
-   * LISTA DE CURSOS
-   */
-
   return (
     <div className="cursos-layout">
-
       <Sidebar />
 
       <main className="cursos-page">
-
         <div className="cursos-header">
-
           <div>
             <h1>Cursos</h1>
 
             <p>
-              Cursos de secundaria del colegio Don Bosco.
+              Cursos de secundaria del colegio
+              Don Bosco.
             </p>
           </div>
 
@@ -222,11 +258,9 @@ function CursosPage() {
             <strong>{cursos.length}</strong>
             <span>cursos</span>
           </div>
-
         </div>
 
         <div className="buscador-contenedor">
-
           <span>🔎</span>
 
           <input
@@ -234,13 +268,13 @@ function CursosPage() {
             type="text"
             placeholder="Buscar curso..."
             value={busqueda}
-            onChange={(e) => setBusqueda(e.target.value)}
+            onChange={(e) =>
+              setBusqueda(e.target.value)
+            }
           />
-
         </div>
 
         <div className="tabla-cursos">
-
           <div className="tabla-titulo">
             <h2>Lista de cursos</h2>
 
@@ -250,7 +284,6 @@ function CursosPage() {
           </div>
 
           <table>
-
             <thead>
               <tr>
                 <th>Grado</th>
@@ -263,18 +296,17 @@ function CursosPage() {
             </thead>
 
             <tbody>
-
               {cursosFiltrados.map((curso) => {
-
                 const cantidad =
-                  obtenerEstudiantesDelCurso(curso).length;
+                  obtenerEstudiantesDelCurso(
+                    curso
+                  ).length;
 
                 const libres =
                   CAPACIDAD_CURSO - cantidad;
 
                 return (
                   <tr key={curso.id}>
-
                     <td>
                       <strong>
                         {curso.grado}
@@ -287,9 +319,7 @@ function CursosPage() {
                       </span>
                     </td>
 
-                    <td>
-                      {cantidad}
-                    </td>
+                    <td>{cantidad}</td>
 
                     <td>
                       {CAPACIDAD_CURSO}
@@ -308,28 +338,23 @@ function CursosPage() {
                     </td>
 
                     <td>
-
                       <button
                         className="boton-ver"
                         onClick={() =>
-                          setCursoSeleccionado(curso)
+                          setCursoSeleccionado(
+                            curso
+                          )
                         }
                       >
                         Ver curso →
                       </button>
-
                     </td>
-
                   </tr>
                 );
               })}
-
             </tbody>
-
           </table>
-
         </div>
-
       </main>
     </div>
   );

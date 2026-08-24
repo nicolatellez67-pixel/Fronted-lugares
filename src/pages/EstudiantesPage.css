@@ -1,18 +1,18 @@
 .estudiantes-layout {
   min-height: 100vh;
-  background: #031a33;
-  color: white;
+  background: #061b33;
 }
+
+/* PAGINA */
 
 .estudiantes-page {
-  margin-left: 220px;
+  margin-left: 230px;
   min-height: 100vh;
-
-  padding: 45px;
-
+  padding: 40px;
   box-sizing: border-box;
+  background: #061b33;
+  color: white;
 }
-
 
 /* ENCABEZADO */
 
@@ -20,74 +20,60 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   margin-bottom: 30px;
 }
 
 .estudiantes-header h1 {
   margin: 0;
-
-  font-size: 32px;
+  font-size: 36px;
+  color: white;
 }
 
 .estudiantes-header p {
   margin-top: 8px;
-
-  color: #9eb4cc;
+  color: #8fa8c4;
 }
-
 
 /* BOTON NUEVO */
 
 .boton-nuevo {
-  padding: 12px 18px;
-
-  border: none;
-  border-radius: 7px;
-
+  padding: 13px 22px;
   background: #f5c400;
-  color: #031a33;
-
+  color: #061b33;
+  border: none;
+  border-radius: 8px;
   font-weight: bold;
-
   cursor: pointer;
 }
 
 .boton-nuevo:hover {
-  background: #ffd52e;
+  background: #ffd21a;
 }
-
 
 /* BARRA */
 
 .estudiantes-barra {
   display: flex;
-
   align-items: center;
-
-  gap: 15px;
-
+  gap: 18px;
   margin-bottom: 20px;
 }
 
 .buscador-estudiantes {
-  width: 400px;
-
-  padding: 12px 15px;
-
-  border: 1px solid #315d87;
-
-  border-radius: 7px;
-
-  background: #082744;
-
+  width: 430px;
+  max-width: 100%;
+  padding: 13px 16px;
+  box-sizing: border-box;
+  background: #092746;
   color: white;
-
+  border: 1px solid #24547d;
+  border-radius: 8px;
   outline: none;
+  font-size: 14px;
 }
 
 .buscador-estudiantes::placeholder {
-  color: #7891aa;
+  color: #8fa8c4;
 }
 
 .buscador-estudiantes:focus {
@@ -95,285 +81,241 @@
 }
 
 .cantidad-estudiantes {
-  color: #9eb4cc;
-
-  font-size: 13px;
+  color: #8fa8c4;
+  border-left: 3px solid #f5c400;
+  padding-left: 25px;
 }
-
 
 /* TABLA */
 
 .tabla-estudiantes {
   width: 100%;
-
-  background: #082744;
-
-  border: 1px solid #24476b;
-
-  border-radius: 10px;
-
-  overflow: hidden;
+  overflow-x: auto;
+  background: #092746;
+  border: 1px solid #24547d;
+  border-radius: 12px;
 }
 
 .tabla-estudiantes table {
   width: 100%;
-
+  min-width: 900px;
   border-collapse: collapse;
 }
 
 .tabla-estudiantes th {
-  padding: 15px;
-
-  text-align: left;
-
-  background: #061f3a;
-
+  padding: 17px 16px;
+  background: #061f3b;
   color: #f5c400;
-
-  font-size: 13px;
+  text-align: left;
+  font-size: 14px;
 }
 
 .tabla-estudiantes td {
-  padding: 14px 15px;
-
-  border-top: 1px solid #1c4265;
-
-  color: #dce7f3;
-
-  font-size: 13px;
+  padding: 16px;
+  color: white;
+  border-top: 1px solid #24547d;
+  font-size: 14px;
 }
 
-.tabla-estudiantes tr:hover td {
-  background: #0b3158;
+.tabla-estudiantes tr:hover {
+  background: #0d3558;
 }
-
 
 /* CURSO */
 
 .curso-badge {
   display: inline-block;
-
-  padding: 5px 9px;
-
+  padding: 8px 12px;
+  background: #123f67;
   border-radius: 5px;
-
-  background: #123f68;
-
   color: #f5c400;
-
-  font-size: 11px;
-
   font-weight: bold;
 }
-
 
 /* ACCIONES */
 
 .acciones {
   display: flex;
-
-  gap: 7px;
+  gap: 8px;
 }
 
-.acciones button {
-  padding: 7px 10px;
-
-  border-radius: 5px;
-
+.boton-editar,
+.boton-eliminar {
+  padding: 8px 13px;
+  border-radius: 6px;
   cursor: pointer;
-
-  font-size: 11px;
+  font-weight: bold;
 }
 
 .boton-editar {
-  border: 1px solid #315d87;
-
-  background: #0b3158;
-
+  background: transparent;
+  border: 1px solid #2c628f;
   color: white;
 }
 
 .boton-editar:hover {
-  border-color: #f5c400;
-
-  color: #f5c400;
+  background: #123f67;
 }
 
 .boton-eliminar {
-  border: 1px solid #703838;
-
-  background: #411f1f;
-
-  color: #ff9b9b;
+  background: #572b32;
+  border: 1px solid #a84a4a;
+  color: white;
 }
 
 .boton-eliminar:hover {
-  background: #612626;
+  background: #74343b;
 }
-
 
 /* SIN ESTUDIANTES */
 
 .sin-estudiantes {
-  padding: 40px !important;
-
+  padding: 30px !important;
   text-align: center;
-
-  color: #7891aa !important;
+  color: #8fa8c4 !important;
 }
-
 
 /* MODAL */
 
 .modal-fondo {
   position: fixed;
-
   top: 0;
   left: 0;
-
   width: 100%;
   height: 100%;
-
-  background: rgba(0, 0, 0, 0.65);
-
+  background: rgba(0, 10, 25, 0.75);
   display: flex;
-
-  align-items: center;
   justify-content: center;
-
+  align-items: center;
   z-index: 1000;
 }
-
 
 /* FORMULARIO */
 
 .formulario-estudiante {
-  width: 400px;
-
+  width: 450px;
+  max-width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
   padding: 30px;
-
   box-sizing: border-box;
-
-  background: #082744;
-
-  border: 1px solid #315d87;
-
-  border-radius: 10px;
-
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  background: #092746;
+  border: 1px solid #24547d;
+  border-top: 5px solid #f5c400;
+  border-radius: 14px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
 }
 
 .formulario-estudiante h2 {
   margin-top: 0;
-
   margin-bottom: 25px;
-
+  text-align: center;
   color: white;
 }
 
 .formulario-estudiante label {
   display: block;
-
-  margin-bottom: 6px;
-
-  color: #b9cce0;
-
-  font-size: 13px;
+  margin-top: 15px;
+  margin-bottom: 7px;
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
 }
 
 .formulario-estudiante input {
   width: 100%;
-
-  padding: 11px;
-
-  margin-bottom: 16px;
-
+  padding: 12px;
   box-sizing: border-box;
-
-  border: 1px solid #315d87;
-
-  border-radius: 6px;
-
-  background: #031a33;
-
+  background: #061b33;
   color: white;
-
+  border: 1px solid #24547d;
+  border-radius: 7px;
   outline: none;
+  font-size: 14px;
+}
+
+.formulario-estudiante input::placeholder {
+  color: #718ba5;
 }
 
 .formulario-estudiante input:focus {
   border-color: #f5c400;
 }
 
-
-/* BOTONES FORMULARIO */
+/* BOTONES DEL FORMULARIO */
 
 .botones-formulario {
   display: flex;
-
-  gap: 10px;
-
-  margin-top: 10px;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 25px;
 }
 
-.boton-guardar,
-.boton-cancelar {
-  flex: 1;
-
-  padding: 11px;
-
-  border-radius: 6px;
-
+.botones-formulario button {
+  padding: 11px 22px;
+  border: none;
+  border-radius: 7px;
   cursor: pointer;
-
   font-weight: bold;
 }
 
 .boton-guardar {
-  border: none;
-
   background: #f5c400;
-
-  color: #031a33;
+  color: #061b33;
 }
 
 .boton-guardar:hover {
-  background: #ffd52e;
+  background: #ffd21a;
 }
 
 .boton-cancelar {
-  border: 1px solid #315d87;
-
-  background: transparent;
-
+  background: #243b53;
   color: white;
 }
 
 .boton-cancelar:hover {
-  background: #0b3158;
+  background: #31516e;
 }
 
+/* CELULAR */
 
-/* RESPONSIVE */
-
-@media (max-width: 900px) {
+@media (max-width: 700px) {
   .estudiantes-page {
-    padding: 30px;
+    margin-left: 180px;
+    padding: 25px;
   }
 
   .estudiantes-header {
+    flex-direction: column;
     align-items: flex-start;
-
     gap: 20px;
+  }
+
+  .estudiantes-header h1 {
+    font-size: 30px;
+  }
+
+  .estudiantes-barra {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .buscador-estudiantes {
     width: 100%;
   }
 
-  .estudiantes-barra {
-    flex-direction: column;
+  .cantidad-estudiantes {
+    border-left: none;
+    border-top: 3px solid #f5c400;
+    padding-left: 0;
+    padding-top: 8px;
+  }
 
-    align-items: flex-start;
+  .tabla-estudiantes {
+    overflow-x: auto;
+  }
+
+  .formulario-estudiante {
+    width: 95%;
   }
 }

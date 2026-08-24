@@ -1,290 +1,164 @@
 .sidebar {
-  width: 230px;
+  width: 220px;
   height: 100vh;
-
+  background: #001b33;
+  color: white;
+  display: flex;
+  flex-direction: column;
   position: fixed;
   left: 0;
   top: 0;
-
-  display: flex;
-  flex-direction: column;
-
   box-sizing: border-box;
-
-  background: #031a33;
-
-  color: white;
-
-  padding: 22px 15px;
-
-  z-index: 100;
+  border-right: 1px solid #173b5c;
+  z-index: 10;
 }
 
-
-/* =========================
-   ENCABEZADO
-   ========================= */
+/* ENCABEZADO */
 
 .sidebar-header {
   text-align: center;
-
-  flex-shrink: 0;
-
-  margin-bottom: 20px;
+  padding: 20px 10px 15px;
 }
 
 .logo-don-bosco {
   width: 58px;
   height: 58px;
-
   margin: 0 auto 8px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background: #f5c400;
-
-  border-radius: 50%;
-
-  overflow: hidden;
 }
 
 .logo-don-bosco img {
-  width: 48px;
-  height: 48px;
-
+  width: 100%;
+  height: 100%;
   object-fit: contain;
 }
 
 .sidebar-header h2 {
-  margin: 5px 0 3px;
-
+  margin: 0;
+  font-size: 19px;
   color: white;
-
-  font-size: 18px;
-
-  letter-spacing: 1px;
 }
 
 .sidebar-header p {
-  margin: 0;
-
-  color: #9eb4cc;
-
-  font-size: 9px;
-
-  line-height: 1.3;
+  margin: 5px 0 0;
+  font-size: 10px;
+  color: #b8c9d8;
+  line-height: 1.4;
 }
 
-
-/* =========================
-   MENÚ
-   ========================= */
+/* MENÚ */
 
 .sidebar-nav {
   flex: 1;
-
-  min-height: 0;
-
-  display: flex;
-  flex-direction: column;
-
-  gap: 5px;
-
   overflow-y: auto;
-
-  padding-right: 3px;
+  padding: 10px 7px;
 }
-
-
-/* BARRA DE DESPLAZAMIENTO */
 
 .sidebar-nav::-webkit-scrollbar {
   width: 5px;
 }
 
-.sidebar-nav::-webkit-scrollbar-track {
-  background: transparent;
-}
-
 .sidebar-nav::-webkit-scrollbar-thumb {
-  background: #24476b;
-
+  background: #245276;
   border-radius: 10px;
 }
 
-
-/* ENLACES */
-
 .sidebar-nav a {
-  min-height: 48px;
-
   display: flex;
   align-items: center;
-
-  gap: 15px;
-
-  padding: 0 14px;
-
+  gap: 18px;
+  height: 48px;
+  padding: 0 18px;
+  margin-bottom: 5px;
   box-sizing: border-box;
-
-  color: white;
-
-  text-decoration: none;
-
   border-radius: 8px;
-
+  color: white;
+  text-decoration: none;
   font-size: 14px;
-
-  flex-shrink: 0;
-
-  transition: 0.2s;
 }
-
-
-/* ICONOS */
-
-.sidebar-nav .icono {
-  width: 22px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  color: #dce8f5;
-
-  font-size: 18px;
-}
-
-
-/* HOVER */
 
 .sidebar-nav a:hover {
-  background: #0b3154;
-
-  color: white;
+  background: #092d4d;
 }
 
-
-/* ACTIVO */
-
 .sidebar-nav a.active {
-  background: #f5c400;
-
-  color: #031a33;
-
+  background: #f8c400;
+  color: #001b33;
   font-weight: bold;
 }
 
-.sidebar-nav a.active .icono {
-  color: #031a33;
+.icono {
+  width: 18px;
+  text-align: center;
+  font-size: 17px;
 }
 
-
-/* =========================
-   USUARIO
-   ========================= */
+/* USUARIO */
 
 .usuario-sidebar {
-  flex-shrink: 0;
-
+  margin: 8px 7px;
+  padding: 12px;
+  border: 1px solid #285276;
+  border-radius: 9px;
   display: flex;
   align-items: center;
-
-  gap: 11px;
-
-  margin-top: 15px;
-
-  padding: 12px;
-
+  gap: 12px;
+  background: #062744;
   box-sizing: border-box;
-
-  background: #082744;
-
-  border: 1px solid #24476b;
-
-  border-radius: 10px;
 }
-
-
-/* CÍRCULO DEL ESCUDO */
 
 .usuario-logo {
   width: 42px;
   height: 42px;
-
-  min-width: 42px;
-
+  border-radius: 50%;
+  background: #f8c400;
   display: flex;
   align-items: center;
   justify-content: center;
-
-  background: #f5c400;
-
-  border-radius: 50%;
-
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .usuario-logo img {
   width: 34px;
   height: 34px;
-
   object-fit: contain;
 }
 
-
-/* INFORMACIÓN */
-
 .usuario-datos {
-  min-width: 0;
-
   display: flex;
   flex-direction: column;
-
-  gap: 4px;
+  min-width: 0;
 }
 
 .usuario-datos strong {
-  display: block;
-
-  color: white;
-
   font-size: 13px;
-
-  white-space: nowrap;
-
+  color: white;
   overflow: hidden;
-
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .usuario-datos span {
-  color: #9eb4cc;
-
-  font-size: 11px;
+  margin-top: 5px;
+  font-size: 10px;
+  color: #a9bfd1;
 }
 
+/* CERRAR SESIÓN */
 
-/* =========================
-   RESPONSIVE
-   ========================= */
+.boton-cerrar-sesion {
+  width: calc(100% - 30px);
+  margin: 5px 15px 15px;
+  padding: 10px;
+  border: none;
+  border-radius: 7px;
+  background: #c0392b;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 12px;
+}
 
-@media (max-width: 700px) {
-
-  .sidebar {
-    width: 190px;
-  }
-
-  .sidebar-nav a {
-    font-size: 13px;
-
-    gap: 10px;
-  }
-
-  .usuario-sidebar {
-    padding: 9px;
-  }
-
+.boton-cerrar-sesion:hover {
+  background: #a93226;
 }

@@ -5,5 +5,12 @@
     "email": "nico@gmail.com",
     "password": "123",
     "rol": "ADMIN"
+  },
+  {
+    "id": 2,
+    "nombre": "Ibert",
+    "email": "ibert@gmail.com",
+    "password": "123",
+    "rol": "DOCENTE"
   }
 ]
