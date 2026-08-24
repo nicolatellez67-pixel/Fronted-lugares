@@ -162,3 +162,66 @@
 .boton-cerrar-sesion:hover {
   background: #a93226;
 }
+
+/* ADAPTACIÓN */
+
+@media (max-width: 800px) {
+  .sidebar {
+    width: 180px;
+  }
+
+  .sidebar-nav a {
+    padding: 0 12px;
+    gap: 10px;
+    font-size: 13px;
+  }
+
+  .usuario-sidebar {
+    padding: 8px;
+  }
+}
+
+@media (max-width: 600px) {
+  .sidebar {
+    width: 70px;
+  }
+
+  .sidebar-header h2,
+  .sidebar-header p,
+  .sidebar-nav a span:not(.icono),
+  .usuario-datos {
+    display: none;
+  }
+
+  .sidebar-header {
+    padding: 15px 5px;
+  }
+
+  .logo-don-bosco {
+    width: 45px;
+    height: 45px;
+  }
+
+  .sidebar-nav a {
+    justify-content: center;
+    padding: 0;
+    gap: 0;
+  }
+
+  .usuario-sidebar {
+    justify-content: center;
+    padding: 7px;
+    margin: 5px;
+  }
+
+  .boton-cerrar-sesion {
+    width: calc(100% - 10px);
+    margin: 5px;
+    font-size: 0;
+  }
+
+  .boton-cerrar-sesion::before {
+    content: "↪";
+    font-size: 18px;
+  }
+}
