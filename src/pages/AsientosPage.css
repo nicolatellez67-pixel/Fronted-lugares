@@ -1,10 +1,14 @@
+/* =========================
+   ESTRUCTURA GENERAL
+   ========================= */
+
 .asientos-layout {
   min-height: 100vh;
   background: #031a33;
 }
 
 .asientos-page {
-  margin-left: 230px;
+  margin-left: 220px;
   min-height: 100vh;
   padding: 40px;
   box-sizing: border-box;
@@ -12,7 +16,10 @@
   color: white;
 }
 
-/* TITULO */
+
+/* =========================
+   TITULO
+   ========================= */
 
 .asientos-page h1 {
   margin: 0;
@@ -27,7 +34,9 @@
 }
 
 
-/* SELECTOR */
+/* =========================
+   SELECTOR DE CURSO
+   ========================= */
 
 .selector-curso {
   width: 350px;
@@ -64,7 +73,9 @@
 }
 
 
-/* AULA */
+/* =========================
+   AULA
+   ========================= */
 
 .aula {
   max-width: 1000px;
@@ -84,22 +95,35 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
 }
 
-.aula h2 {
-  margin-top: 0;
-  margin-bottom: 5px;
 
-  text-align: center;
+/* =========================
+   ENCABEZADO DEL AULA
+   ========================= */
+
+.encabezado-aula {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 15px;
+
+  margin-bottom: 25px;
+
+  flex-wrap: wrap;
+}
+
+.encabezado-aula h2 {
+  margin: 0;
 
   color: white;
 
   font-size: 24px;
 }
 
-.aula > p {
-  margin-top: 0;
-  margin-bottom: 30px;
-
-  text-align: center;
+.encabezado-aula p {
+  margin: 5px 0 0;
 
   color: #f5c400;
 
@@ -109,7 +133,61 @@
 }
 
 
-/* PARTE SUPERIOR DEL AULA */
+/* =========================
+   BOTON REPORTAR
+   ========================= */
+
+.boton-reportar {
+  border: none;
+
+  padding: 10px 16px;
+
+  background: #c0392b;
+
+  color: white;
+
+  border-radius: 7px;
+
+  font-size: 12px;
+
+  font-weight: bold;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.boton-reportar:hover {
+  background: #a93226;
+
+  transform: translateY(-1px);
+}
+
+
+/* =========================
+   LEYENDA REPORTE
+   ========================= */
+
+.leyenda-reporte {
+  display: flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  color: #dce7f3;
+
+  font-size: 12px;
+
+  font-weight: bold;
+
+  white-space: nowrap;
+}
+
+
+/* =========================
+   PARTE SUPERIOR DEL AULA
+   ========================= */
 
 .parte-superior {
   display: grid;
@@ -120,11 +198,13 @@
 
   gap: 25px;
 
-  margin-bottom: 35px;
+  margin-bottom: 30px;
 }
 
 
-/* PUERTA */
+/* =========================
+   PUERTA
+   ========================= */
 
 .puerta {
   display: flex;
@@ -159,7 +239,9 @@
 }
 
 
-/* PIZARRA */
+/* =========================
+   PIZARRA
+   ========================= */
 
 .pizarra {
   padding: 14px;
@@ -180,7 +262,9 @@
 }
 
 
-/* PROFESOR */
+/* =========================
+   PROFESOR
+   ========================= */
 
 .profesor {
   display: flex;
@@ -215,7 +299,44 @@
 }
 
 
-/* ASIENTOS */
+/* =========================
+   RESUMEN DE ASIENTOS
+   ========================= */
+
+.resumen-asientos {
+  display: flex;
+
+  gap: 25px;
+
+  margin-bottom: 20px;
+
+  color: white;
+
+  font-size: 13px;
+}
+
+.resumen-asientos div {
+  display: flex;
+
+  gap: 5px;
+
+  align-items: center;
+}
+
+.resumen-asientos strong {
+  color: #f5c400;
+
+  font-size: 15px;
+}
+
+.resumen-asientos span {
+  color: #9eb4cc;
+}
+
+
+/* =========================
+   ASIENTOS
+   ========================= */
 
 .asientos {
   display: grid;
@@ -230,9 +351,13 @@
 }
 
 
-/* ASIENTO LIBRE */
+/* =========================
+   ASIENTO
+   ========================= */
 
 .asiento {
+  position: relative;
+
   min-height: 75px;
 
   display: flex;
@@ -285,7 +410,9 @@
 }
 
 
-/* ASIENTO OCUPADO */
+/* =========================
+   ASIENTO OCUPADO
+   ========================= */
 
 .asiento.ocupado {
   background: #123f68;
@@ -300,34 +427,94 @@
 }
 
 
-/* MODAL */
+/* =========================
+   INDICADOR DE REPORTE
+   ========================= */
+
+.indicador-reporte {
+  position: absolute;
+
+  top: 6px;
+
+  right: 7px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 2px;
+
+  margin: 0 !important;
+
+  font-size: 10px;
+
+  font-weight: bold;
+}
+
+.punto-rojo {
+  margin: 0 !important;
+
+  color: #e53935 !important;
+
+  font-size: 17px !important;
+
+  line-height: 1;
+}
+
+.numero-reportes {
+  margin: 0 !important;
+
+  color: #e53935 !important;
+
+  font-size: 10px !important;
+
+  font-weight: bold;
+}
+
+
+/* =========================
+   MODAL
+   ========================= */
 
 .modal-fondo {
   position: fixed;
 
   top: 0;
+
   left: 0;
 
   width: 100%;
+
   height: 100%;
 
-  background: rgba(0, 0, 0, 0.65);
+  background: rgba(0, 0, 0, 0.70);
 
   display: flex;
 
   justify-content: center;
+
   align-items: center;
 
   z-index: 1000;
+
+  padding: 20px;
+
+  box-sizing: border-box;
 }
 
 
-/* FORMULARIO */
+/* =========================
+   FORMULARIO
+   ========================= */
 
 .formulario-asiento {
   width: 450px;
 
-  max-width: 90%;
+  max-width: 95%;
+
+  max-height: 90vh;
+
+  overflow-y: auto;
 
   padding: 30px;
 
@@ -347,21 +534,33 @@
 .formulario-asiento h2 {
   margin-top: 0;
 
+  margin-bottom: 5px;
+
   text-align: center;
 
   color: white;
+
+  font-size: 24px;
 }
 
-.formulario-asiento p {
+.formulario-asiento > p {
+  margin-top: 0;
+
+  margin-bottom: 20px;
+
   text-align: center;
 
   color: #9eb4cc;
+
+  font-size: 13px;
 }
 
 .formulario-asiento label {
   display: block;
 
-  margin-bottom: 8px;
+  margin-top: 12px;
+
+  margin-bottom: 7px;
 
   color: #dce7f3;
 
@@ -370,12 +569,19 @@
   font-weight: bold;
 }
 
-.formulario-asiento select {
+
+/* =========================
+   INPUTS
+   ========================= */
+
+.formulario-asiento select,
+.formulario-asiento input,
+.formulario-asiento textarea {
   width: 100%;
 
   box-sizing: border-box;
 
-  padding: 12px;
+  padding: 11px;
 
   background: #031a33;
 
@@ -385,17 +591,35 @@
 
   border-radius: 7px;
 
-  font-size: 14px;
+  font-family: inherit;
+
+  font-size: 13px;
 
   outline: none;
 }
 
-.formulario-asiento select:focus {
+.formulario-asiento textarea {
+  resize: vertical;
+
+  min-height: 90px;
+}
+
+.formulario-asiento select:focus,
+.formulario-asiento input:focus,
+.formulario-asiento textarea:focus {
   border-color: #f5c400;
 }
 
+.formulario-asiento input[readonly] {
+  color: #9eb4cc;
 
-/* BOTONES */
+  background: #061f3a;
+}
+
+
+/* =========================
+   BOTONES DEL ASIENTO
+   ========================= */
 
 .botones-asiento {
   display: flex;
@@ -417,10 +641,14 @@
   cursor: pointer;
 
   font-weight: bold;
+
+  font-size: 13px;
 }
 
 
-/* GUARDAR */
+/* =========================
+   GUARDAR
+   ========================= */
 
 .boton-guardar {
   border: none;
@@ -435,7 +663,9 @@
 }
 
 
-/* LIBERAR */
+/* =========================
+   LIBERAR
+   ========================= */
 
 .boton-liberar {
   border: none;
@@ -450,7 +680,9 @@
 }
 
 
-/* CANCELAR */
+/* =========================
+   CANCELAR
+   ========================= */
 
 .boton-cancelar {
   border: 1px solid #315d87;
@@ -465,7 +697,117 @@
 }
 
 
-/* RESPONSIVE */
+/* =========================
+   REPORTES DEL ASIENTO
+   ========================= */
+
+.reportes-asiento {
+  margin-top: 20px;
+
+  padding: 15px;
+
+  background: #061f3a;
+
+  border: 1px solid #315d87;
+
+  border-left: 4px solid #e53935;
+
+  border-radius: 8px;
+
+  max-height: 230px;
+
+  overflow-y: auto;
+
+  box-sizing: border-box;
+}
+
+.reportes-asiento h3 {
+  margin: 0 0 12px;
+
+  color: white;
+
+  font-size: 15px;
+}
+
+.reporte-item {
+  margin-bottom: 10px;
+
+  padding: 12px;
+
+  background: #082744;
+
+  border: 1px solid #24476b;
+
+  border-radius: 7px;
+
+  box-sizing: border-box;
+}
+
+.reporte-item:last-child {
+  margin-bottom: 0;
+}
+
+.reporte-cabecera {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  gap: 10px;
+
+  margin-bottom: 8px;
+}
+
+.reporte-cabecera strong {
+  color: #f5c400;
+
+  font-size: 12px;
+}
+
+.reporte-cabecera span {
+  color: #9eb4cc;
+
+  font-size: 11px;
+}
+
+.reporte-item p {
+  margin: 5px 0;
+
+  color: #dce7f3;
+
+  font-size: 12px;
+
+  line-height: 1.4;
+
+  text-align: left;
+}
+
+.reporte-item p strong {
+  color: white;
+}
+
+
+/* =========================
+   SCROLL DEL MODAL
+   ========================= */
+
+.formulario-asiento::-webkit-scrollbar,
+.reportes-asiento::-webkit-scrollbar {
+  width: 6px;
+}
+
+.formulario-asiento::-webkit-scrollbar-thumb,
+.reportes-asiento::-webkit-scrollbar-thumb {
+  background: #315d87;
+
+  border-radius: 10px;
+}
+
+
+/* =========================
+   RESPONSIVE
+   ========================= */
 
 @media (max-width: 900px) {
 
@@ -484,6 +826,7 @@
   .asiento {
     min-height: 65px;
   }
+
 }
 
 
@@ -501,6 +844,49 @@
 
   .asientos {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .encabezado-aula {
+    flex-direction: column;
+
+    align-items: stretch;
+  }
+
+  .boton-reportar {
+    width: 100%;
+  }
+
+  .leyenda-reporte {
+    justify-content: center;
+  }
+
+}
+
+
+@media (max-width: 450px) {
+
+  .asientos-page {
+    padding: 15px;
+  }
+
+  .aula {
+    padding: 15px;
+  }
+
+  .asientos {
+    gap: 8px;
+  }
+
+  .asiento {
+    min-height: 65px;
+  }
+
+  .asiento strong {
+    font-size: 13px;
+  }
+
+  .asiento span {
+    font-size: 9px;
   }
 
 }
