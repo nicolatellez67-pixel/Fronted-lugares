@@ -8,13 +8,13 @@ type Estudiante = {
   apellido: string;
   curso: string;
   tutor: string;
-  telefono?: string;
+  telefonoTutor: string;
 };
 
 type Asignacion = {
   asiento: string;
   estudianteId: number;
-  asignacionId: number;
+  asignacionId?: number;
 };
 
 type Reporte = {
@@ -22,8 +22,8 @@ type Reporte = {
   estudianteId: number;
   estudiante: string;
   curso: string;
-  asiento: string;
-  asignacionId: number;
+  asiento?: string;
+  asignacionId?: number;
   fecha: string;
   hora: string;
   profesor: string;
@@ -51,22 +51,77 @@ const cursos = [
   "6to C",
 ];
 
-function HomePage() {
-  const [cantidadEstudiantes, setCantidadEstudiantes] = useState(0);
-  const [asientosOcupados, setAsientosOcupados] = useState(0);
+const CAPACIDAD_POR_CURSO = 35;
 
+function obtenerEstudiantes(): Estudiante[] {
+  try {
+    const datos = JSON.parse(
+      localStorage.getItem("estudiantes") || "[]"
+    );
+
+    return datos.map((estudiante: any) => ({
+      ...estudiante,
+      telefonoTutor:
+        estudiante.telefonoTutor ||
+        estudiante.telefono ||
+        "",
+    }));
+  } catch {
+    return [];
+  }
+}
+
+function obtenerAsignaciones(): Record<string, Asignacion[]> {
+  try {
+    return JSON.parse(
+      localStorage.getItem("asignaciones") || "{}"
+    );
+  } catch {
+    return {};
+  }
+}
+
+function obtenerReportes(): Reporte[] {
+  try {
+    return JSON.parse(
+      localStorage.getItem("reportes") || "[]"
+    );
+  } catch {
+    return [];
+  }
+}
+
+function HomePage() {
+  const [cantidadEstudiantes, setCantidadEstudiantes] =
+    useState(0);
+
+  const [asientosOcupados, setAsientosOcupados] =
+    useState(0);
+
+  const [actualizacion, setActualizacion] =
+    useState(0);
+
+  /* MODALES */
   const [mostrarEstudiante, setMostrarEstudiante] =
     useState(false);
 
   const [mostrarReporte, setMostrarReporte] =
     useState(false);
 
+  const [mostrarGestionAsientos, setMostrarGestionAsientos] =
+    useState(false);
+
+  const [mostrarEstadoCursos, setMostrarEstadoCursos] =
+    useState(false);
+
+  /* FORMULARIO ESTUDIANTE */
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
   const [curso, setCurso] = useState("");
   const [tutor, setTutor] = useState("");
   const [telefono, setTelefono] = useState("");
 
+  /* FORMULARIO REPORTE */
   const [cursoReporte, setCursoReporte] =
     useState("");
 
@@ -76,106 +131,54 @@ function HomePage() {
   const [observacion, setObservacion] =
     useState("");
 
-  const totalCursos = 18;
-  const totalAsientos = totalCursos * 35;
+  /* GESTIONAR ASIENTOS */
+  const [cursoGestionAsientos, setCursoGestionAsientos] =
+    useState("");
 
-  const estudiantes: Estudiante[] = JSON.parse(
-    localStorage.getItem("estudiantes") || "[]"
-  );
+  const totalCursos = cursos.length;
 
-  /*
-   * =========================
-   * ASIGNACIONES ACTUALES
-   * =========================
-   */
+  const totalAsientos =
+    totalCursos * CAPACIDAD_POR_CURSO;
 
-  const asignaciones: Record<
-    string,
-    Asignacion[]
-  > = JSON.parse(
-    localStorage.getItem("asignaciones") || "{}"
-  );
+  function actualizarResumen() {
+    const estudiantes = obtenerEstudiantes();
+    const asignaciones = obtenerAsignaciones();
 
-  /*
-   * =========================
-   * ESTUDIANTES DEL CURSO
-   * =========================
-   */
+    let ocupados = 0;
 
-  const estudiantesDelCurso =
-    cursoReporte
-      ? estudiantes.filter(
-          (estudiante) =>
-            estudiante.curso
-              .trim()
-              .toLowerCase() ===
-            cursoReporte.trim().toLowerCase()
-        )
-      : [];
-
-  /*
-   * =========================
-   * SOLO ESTUDIANTES CON ASIENTO
-   * =========================
-   */
-
-  const asignacionesDelCurso =
-    cursoReporte
-      ? asignaciones[cursoReporte] || []
-      : [];
-
-  const estudiantesAsignadosDelCurso =
-    estudiantesDelCurso.filter((estudiante) =>
-      asignacionesDelCurso.some(
-        (asignacion) =>
-          asignacion.estudianteId ===
-          estudiante.id
-      )
+    Object.values(asignaciones).forEach(
+      (cursoAsignado) => {
+        if (Array.isArray(cursoAsignado)) {
+          ocupados += cursoAsignado.length;
+        }
+      }
     );
 
-  /*
-   * =========================
-   * RESUMEN
-   * =========================
-   */
+    setCantidadEstudiantes(estudiantes.length);
+    setAsientosOcupados(ocupados);
+    setActualizacion((valor) => valor + 1);
+  }
 
   useEffect(() => {
-    function actualizarResumen() {
-      const estudiantesGuardados =
-        JSON.parse(
-          localStorage.getItem(
-            "estudiantes"
-          ) || "[]"
-        );
-
-      const asignacionesGuardadas =
-        JSON.parse(
-          localStorage.getItem(
-            "asignaciones"
-          ) || "{}"
-        );
-
-      let ocupados = 0;
-
-      Object.values(
-        asignacionesGuardadas
-      ).forEach((curso) => {
-        if (Array.isArray(curso)) {
-          ocupados += curso.length;
-        }
-      });
-
-      setCantidadEstudiantes(
-        estudiantesGuardados.length
-      );
-
-      setAsientosOcupados(ocupados);
-    }
-
     actualizarResumen();
 
     window.addEventListener(
       "storage",
+      actualizarResumen
+    );
+
+    window.addEventListener(
+      "asignacionesActualizadas",
+      actualizarResumen
+    );
+
+    window.addEventListener(
+      "estudiantesActualizados",
+      actualizarResumen
+    );
+
+    window.addEventListener(
+      "reportesActualizados",
       actualizarResumen
     );
 
@@ -184,17 +187,130 @@ function HomePage() {
         "storage",
         actualizarResumen
       );
+
+      window.removeEventListener(
+        "asignacionesActualizadas",
+        actualizarResumen
+      );
+
+      window.removeEventListener(
+        "estudiantesActualizados",
+        actualizarResumen
+      );
+
+      window.removeEventListener(
+        "reportesActualizados",
+        actualizarResumen
+      );
     };
   }, []);
 
-  const asientosLibres =
-    totalAsientos - asientosOcupados;
+  const asientosLibres = Math.max(
+    0,
+    totalAsientos - asientosOcupados
+  );
 
-  /*
-   * =========================
-   * REGISTRAR ESTUDIANTE
-   * =========================
-   */
+  const estudiantes = obtenerEstudiantes();
+  const asignaciones = obtenerAsignaciones();
+
+  /* ==========================================
+     ESTUDIANTES PARA REPORTAR
+     ========================================== */
+
+  const estudiantesDelCurso =
+    cursoReporte
+      ? estudiantes.filter(
+          (estudiante) =>
+            estudiante.curso.trim().toLowerCase() ===
+            cursoReporte.trim().toLowerCase()
+        )
+      : [];
+
+  const asignacionesDelCursoReporte =
+    cursoReporte
+      ? asignaciones[cursoReporte] || []
+      : [];
+
+  const estudiantesAsignadosDelCurso =
+    estudiantesDelCurso.filter(
+      (estudiante) =>
+        asignacionesDelCursoReporte.some(
+          (asignacion) =>
+            asignacion.estudianteId ===
+            estudiante.id
+        )
+    );
+
+  /* ==========================================
+     ESTADO DE LOS CURSOS
+     ========================================== */
+
+  const cursosEstado = cursos.map(
+    (nombreCurso) => {
+      const asignacionesCurso =
+        asignaciones[nombreCurso] || [];
+
+      const ocupados =
+        asignacionesCurso.length;
+
+      const libres =
+        CAPACIDAD_POR_CURSO - ocupados;
+
+      const porcentaje =
+        Math.round(
+          (ocupados / CAPACIDAD_POR_CURSO) * 100
+        );
+
+      return {
+        nombreCurso,
+        ocupados,
+        libres: Math.max(0, libres),
+        porcentaje: Math.min(
+          porcentaje,
+          100
+        ),
+      };
+    }
+  );
+
+  const cursosMostrados =
+    cursosEstado.slice(0, 6);
+
+  /* ==========================================
+     GESTIONAR ASIENTOS
+     ========================================== */
+
+  const asignacionesGestion =
+    cursoGestionAsientos
+      ? asignaciones[cursoGestionAsientos] || []
+      : [];
+
+  const ocupadosGestion =
+    asignacionesGestion.length;
+
+  const libresGestion =
+    Math.max(
+      0,
+      CAPACIDAD_POR_CURSO -
+        ocupadosGestion
+    );
+
+  const estudiantesGestion =
+    cursoGestionAsientos
+      ? estudiantes.filter(
+          (estudiante) =>
+            estudiante.curso
+              .trim()
+              .toLowerCase() ===
+            cursoGestionAsientos
+              .trim()
+              .toLowerCase()
+        )
+      : [];
+
+  /* ==========================================
+     REGISTRAR ESTUDIANTE
+     ========================================== */
 
   function abrirFormularioEstudiante() {
     setNombre("");
@@ -212,16 +328,12 @@ function HomePage() {
 
   function guardarEstudiante() {
     if (!nombre.trim()) {
-      alert(
-        "Escribe el nombre del estudiante"
-      );
+      alert("Escribe el nombre del estudiante");
       return;
     }
 
     if (!apellido.trim()) {
-      alert(
-        "Escribe el apellido del estudiante"
-      );
+      alert("Escribe el apellido del estudiante");
       return;
     }
 
@@ -231,42 +343,43 @@ function HomePage() {
     }
 
     if (!tutor.trim()) {
-      alert(
-        "Escribe el tutor del estudiante"
-      );
+      alert("Escribe el tutor del estudiante");
       return;
     }
 
-    const estudiantesActuales:
-      Estudiante[] = JSON.parse(
-        localStorage.getItem(
-          "estudiantes"
-        ) || "[]"
-      );
+    if (!telefono.trim()) {
+      alert("Escribe el teléfono del tutor");
+      return;
+    }
 
-    const nuevoEstudiante:
-      Estudiante = {
-        id: Date.now(),
-        nombre: nombre.trim(),
-        apellido: apellido.trim(),
-        curso,
-        tutor: tutor.trim(),
-        telefono: telefono.trim(),
-      };
+    const estudiantesActuales =
+      obtenerEstudiantes();
 
-    estudiantesActuales.push(
-      nuevoEstudiante
-    );
+    const nuevoEstudiante: Estudiante = {
+      id: Date.now(),
+      nombre: nombre.trim(),
+      apellido: apellido.trim(),
+      curso,
+      tutor: tutor.trim(),
+      telefonoTutor: telefono.trim(),
+    };
+
+    const nuevosEstudiantes = [
+      ...estudiantesActuales,
+      nuevoEstudiante,
+    ];
 
     localStorage.setItem(
       "estudiantes",
-      JSON.stringify(
-        estudiantesActuales
-      )
+      JSON.stringify(nuevosEstudiantes)
     );
 
     setCantidadEstudiantes(
-      estudiantesActuales.length
+      nuevosEstudiantes.length
+    );
+
+    window.dispatchEvent(
+      new Event("estudiantesActualizados")
     );
 
     alert(
@@ -276,11 +389,9 @@ function HomePage() {
     cerrarFormularioEstudiante();
   }
 
-  /*
-   * =========================
-   * ABRIR REPORTE
-   * =========================
-   */
+  /* ==========================================
+     REPORTAR ESTUDIANTE
+     ========================================== */
 
   function abrirFormularioReporte() {
     setCursoReporte("");
@@ -290,25 +401,12 @@ function HomePage() {
     setMostrarReporte(true);
   }
 
-  /*
-   * =========================
-   * CERRAR REPORTE
-   * =========================
-   */
-
   function cerrarFormularioReporte() {
     setMostrarReporte(false);
-
     setCursoReporte("");
     setEstudianteReporte("");
     setObservacion("");
   }
-
-  /*
-   * =========================
-   * GUARDAR REPORTE
-   * =========================
-   */
 
   function guardarReporte() {
     if (!cursoReporte) {
@@ -334,47 +432,24 @@ function HomePage() {
       );
 
     if (!estudiante) {
-      alert(
-        "No se encontró el estudiante"
-      );
+      alert("No se encontró el estudiante");
       return;
     }
 
-    /*
-     * Buscar las asignaciones actuales
-     * directamente desde localStorage
-     */
+    const asignacionesActuales =
+      obtenerAsignaciones();
 
-    const asignacionesActuales:
-      Record<string, Asignacion[]> =
-      JSON.parse(
-        localStorage.getItem(
-          "asignaciones"
-        ) || "{}"
-      );
-
-    const asignacionesDelCursoActual =
+    const asignacionesCurso =
       asignacionesActuales[
         cursoReporte
       ] || [];
 
-    /*
-     * Buscar el asiento actual
-     * del estudiante
-     */
-
     const asignacion =
-      asignacionesDelCursoActual.find(
+      asignacionesCurso.find(
         (item) =>
           item.estudianteId ===
           estudiante.id
       );
-
-    /*
-     * IMPORTANTE:
-     * No se puede reportar a alguien
-     * que no tenga asiento.
-     */
 
     if (!asignacion) {
       alert(
@@ -383,32 +458,20 @@ function HomePage() {
       return;
     }
 
-    /*
-     * =========================
-     * PROFESOR
-     * =========================
-     */
+    let usuario: any = null;
 
-    const usuarioGuardado =
-      localStorage.getItem(
-        "usuarioActual"
+    try {
+      usuario = JSON.parse(
+        localStorage.getItem(
+          "usuarioActual"
+        ) || "null"
       );
-
-    const usuario =
-      usuarioGuardado
-        ? JSON.parse(
-            usuarioGuardado
-          )
-        : null;
+    } catch {
+      usuario = null;
+    }
 
     const profesor =
       usuario?.nombre || "Usuario";
-
-    /*
-     * =========================
-     * FECHA Y HORA
-     * =========================
-     */
 
     const ahora = new Date();
 
@@ -424,66 +487,34 @@ function HomePage() {
         }
       );
 
-    /*
-     * =========================
-     * REPORTES EXISTENTES
-     * =========================
-     */
+    const reportes =
+      obtenerReportes();
 
-    const reportes:
-      Reporte[] = JSON.parse(
-        localStorage.getItem(
-          "reportes"
-        ) || "[]"
-      );
+    const nuevoReporte: Reporte = {
+      id: Date.now(),
+      estudianteId: estudiante.id,
+      estudiante:
+        `${estudiante.nombre} ${estudiante.apellido}`,
+      curso: cursoReporte,
+      asiento: asignacion.asiento,
+      asignacionId:
+        asignacion.asignacionId,
+      fecha,
+      hora,
+      profesor,
+      observacion:
+        observacion.trim(),
+    };
 
-    /*
-     * =========================
-     * NUEVO REPORTE
-     * =========================
-     */
-
-    const nuevoReporte:
-      Reporte = {
-        id: Date.now(),
-
-        estudianteId:
-          estudiante.id,
-
-        estudiante:
-          `${estudiante.nombre} ${estudiante.apellido}`,
-
-        curso:
-          cursoReporte,
-
-        /*
-         * GUARDAMOS EL ASIENTO
-         * Y LA ASIGNACIÓN ACTUAL
-         */
-
-        asiento:
-          asignacion.asiento,
-
-        asignacionId:
-          asignacion.asignacionId,
-
-        fecha,
-
-        hora,
-
-        profesor,
-
-        observacion:
-          observacion.trim(),
-      };
-
-    reportes.push(
-      nuevoReporte
-    );
+    reportes.push(nuevoReporte);
 
     localStorage.setItem(
       "reportes",
       JSON.stringify(reportes)
+    );
+
+    window.dispatchEvent(
+      new Event("reportesActualizados")
     );
 
     alert(
@@ -493,14 +524,56 @@ function HomePage() {
     cerrarFormularioReporte();
   }
 
+  /* ==========================================
+     GESTIONAR ASIENTOS
+     ========================================== */
+
+  function abrirGestionAsientos() {
+    setCursoGestionAsientos("");
+    setMostrarGestionAsientos(true);
+  }
+
+  function cerrarGestionAsientos() {
+    setMostrarGestionAsientos(false);
+    setCursoGestionAsientos("");
+  }
+
+  function verAsientosDelCurso() {
+    if (!cursoGestionAsientos) {
+      alert("Selecciona un curso");
+      return;
+    }
+
+    window.location.href =
+      `/asientos?curso=${encodeURIComponent(
+        cursoGestionAsientos
+      )}`;
+  }
+
+  /* ==========================================
+     ESTADO DE CURSOS
+     ========================================== */
+
+  function abrirEstadoCursos() {
+    setMostrarEstadoCursos(true);
+  }
+
+  function cerrarEstadoCursos() {
+    setMostrarEstadoCursos(false);
+  }
+
   return (
     <div className="home">
+
       <Sidebar />
 
       <main className="content">
+
         <div className="inicio-fondo">
 
-          {/* ENCABEZADO */}
+          {/* ================================
+              ENCABEZADO
+              ================================= */}
 
           <div className="inicio-header">
 
@@ -551,7 +624,10 @@ function HomePage() {
 
           </div>
 
-          {/* RESUMEN */}
+
+          {/* ================================
+              RESUMEN
+              ================================= */}
 
           <div className="resumen">
 
@@ -579,6 +655,7 @@ function HomePage() {
 
             </div>
 
+
             <div className="resumen-card verde">
 
               <div className="icono-card">
@@ -603,6 +680,7 @@ function HomePage() {
 
             </div>
 
+
             <div className="resumen-card amarillo">
 
               <div className="icono-card">
@@ -626,6 +704,7 @@ function HomePage() {
               </div>
 
             </div>
+
 
             <div className="resumen-card verde">
 
@@ -653,19 +732,30 @@ function HomePage() {
 
           </div>
 
-          {/* CONTENIDO INFERIOR */}
+
+          {/* ================================
+              PARTE INFERIOR
+              ================================= */}
 
           <div className="inicio-inferior">
 
-            {/* ACCIONES RAPIDAS */}
+
+            {/* ================================
+                ACCIONES RÁPIDAS
+                ================================= */}
 
             <section className="panel-acciones">
 
               <div className="panel-titulo">
+
                 <h2>
                   ⚡ Acciones rápidas
                 </h2>
+
               </div>
+
+
+              {/* REGISTRAR */}
 
               <button
                 className="accion registrar"
@@ -695,12 +785,14 @@ function HomePage() {
 
               </button>
 
+
+              {/* GESTIONAR ASIENTOS */}
+
               <button
                 className="accion asiento"
-                onClick={() => {
-                  window.location.href =
-                    "/asientos";
-                }}
+                onClick={
+                  abrirGestionAsientos
+                }
               >
 
                 <div className="accion-icono">
@@ -714,8 +806,8 @@ function HomePage() {
                   </strong>
 
                   <span>
-                    Asignar o cambiar el lugar
-                    de un estudiante
+                    Consultar y administrar
+                    los lugares de un curso
                   </span>
 
                 </div>
@@ -723,6 +815,9 @@ function HomePage() {
                 <b>›</b>
 
               </button>
+
+
+              {/* REPORTAR */}
 
               <button
                 className="accion reporte"
@@ -742,8 +837,8 @@ function HomePage() {
                   </strong>
 
                   <span>
-                    Registrar un reporte
-                    de comportamiento
+                    Registrar un cambio de lugar
+                    no autorizado
                   </span>
 
                 </div>
@@ -754,7 +849,10 @@ function HomePage() {
 
             </section>
 
-            {/* ESTADO DE LOS CURSOS */}
+
+            {/* ================================
+                ESTADO CURSOS
+                ================================= */}
 
             <section className="panel-cursos">
 
@@ -765,6 +863,7 @@ function HomePage() {
                 </h2>
 
               </div>
+
 
               <div className="curso-estado">
 
@@ -782,58 +881,44 @@ function HomePage() {
 
               </div>
 
-              {[
-                "6to A",
-                "6to B",
-                "5to A",
-                "6to C",
-                "5to B",
-              ].map(
-                (
-                  nombreCurso,
-                  index
-                ) => {
 
-                  const valores = [
-                    [91, 32],
-                    [77, 27],
-                    [57, 20],
-                    [3, 1],
-                    [66, 23],
-                  ];
+              {cursosMostrados.map(
+                (cursoItem) => {
 
                   const porcentaje =
-                    valores[index][0];
+                    cursoItem.porcentaje;
 
-                  const ocupados =
-                    valores[index][1];
+                  const claseBarra =
+                    porcentaje <= 10
+                      ? "barra roja"
+                      : porcentaje <= 60
+                      ? "barra amarilla"
+                      : "barra verde";
 
                   return (
+
                     <div
                       className="curso-fila"
                       key={
-                        nombreCurso
+                        cursoItem.nombreCurso
                       }
                     >
 
                       <strong>
-                        {nombreCurso}
+                        {
+                          cursoItem.nombreCurso
+                        }
                       </strong>
 
                       <div className="barra-contenedor">
 
                         <div
                           className={
-                            porcentaje <=
-                            10
-                              ? "barra roja"
-                              : porcentaje <=
-                                60
-                              ? "barra amarilla"
-                              : "barra verde"
+                            claseBarra
                           }
                           style={{
-                            width: `${porcentaje}%`,
+                            width:
+                              `${porcentaje}%`,
                           }}
                         />
 
@@ -844,20 +929,24 @@ function HomePage() {
                       </strong>
 
                       <span>
-                        {ocupados} / 35
+                        {
+                          cursoItem.ocupados
+                        }{" "}
+                        / 35
                       </span>
 
                     </div>
+
                   );
                 }
               )}
 
+
               <button
                 className="ver-cursos"
-                onClick={() => {
-                  window.location.href =
-                    "/cursos";
-                }}
+                onClick={
+                  abrirEstadoCursos
+                }
               >
                 Ver todos los cursos →
               </button>
@@ -866,7 +955,10 @@ function HomePage() {
 
           </div>
 
-          {/* INFORMACION */}
+
+          {/* ================================
+              INFORMACIÓN
+              ================================= */}
 
           <div className="informacion-sistema">
 
@@ -892,6 +984,7 @@ function HomePage() {
 
             </div>
 
+
             <div>
 
               <span>🪑</span>
@@ -914,18 +1007,19 @@ function HomePage() {
 
             </div>
 
+
             <div>
 
-              <span>👤</span>
+              <span>👥</span>
 
               <div>
 
                 <small>
-                  Usuarios activos
+                  Estudiantes registrados
                 </small>
 
                 <strong>
-                  2
+                  {cantidadEstudiantes}
                 </strong>
 
                 <em>
@@ -935,6 +1029,7 @@ function HomePage() {
               </div>
 
             </div>
+
 
             <div>
 
@@ -961,11 +1056,13 @@ function HomePage() {
           </div>
 
         </div>
+
       </main>
 
-      {/* ========================= */}
-      {/* MODAL REGISTRAR ESTUDIANTE */}
-      {/* ========================= */}
+
+      {/* =====================================================
+          MODAL REGISTRAR ESTUDIANTE
+          ===================================================== */}
 
       {mostrarEstudiante && (
 
@@ -999,6 +1096,7 @@ function HomePage() {
 
             </div>
 
+
             <div className="form-grid">
 
               <div className="campo">
@@ -1020,6 +1118,7 @@ function HomePage() {
 
               </div>
 
+
               <div className="campo">
 
                 <label>
@@ -1038,6 +1137,7 @@ function HomePage() {
                 />
 
               </div>
+
 
               <div className="campo">
 
@@ -1060,20 +1160,21 @@ function HomePage() {
 
                   {cursos.map(
                     (cursoItem) => (
+
                       <option
                         key={cursoItem}
-                        value={
-                          cursoItem
-                        }
+                        value={cursoItem}
                       >
                         {cursoItem}
                       </option>
+
                     )
                   )}
 
                 </select>
 
               </div>
+
 
               <div className="campo">
 
@@ -1094,6 +1195,7 @@ function HomePage() {
 
               </div>
 
+
               <div className="campo campo-completo">
 
                 <label>
@@ -1101,7 +1203,7 @@ function HomePage() {
                 </label>
 
                 <input
-                  type="text"
+                  type="tel"
                   value={telefono}
                   onChange={(e) =>
                     setTelefono(
@@ -1114,6 +1216,7 @@ function HomePage() {
               </div>
 
             </div>
+
 
             <div className="modal-botones">
 
@@ -1143,9 +1246,10 @@ function HomePage() {
 
       )}
 
-      {/* ========================= */}
-      {/* MODAL REPORTAR ESTUDIANTE */}
-      {/* ========================= */}
+
+      {/* =====================================================
+          MODAL REPORTAR
+          ===================================================== */}
 
       {mostrarReporte && (
 
@@ -1179,6 +1283,7 @@ function HomePage() {
 
             </div>
 
+
             <div className="campo">
 
               <label>
@@ -1193,9 +1298,7 @@ function HomePage() {
                     e.target.value
                   );
 
-                  setEstudianteReporte(
-                    ""
-                  );
+                  setEstudianteReporte("");
 
                 }}
               >
@@ -1209,9 +1312,7 @@ function HomePage() {
 
                     <option
                       key={cursoItem}
-                      value={
-                        cursoItem
-                      }
+                      value={cursoItem}
                     >
                       {cursoItem}
                     </option>
@@ -1223,6 +1324,7 @@ function HomePage() {
 
             </div>
 
+
             <div className="campo">
 
               <label>
@@ -1230,17 +1332,13 @@ function HomePage() {
               </label>
 
               <select
-                value={
-                  estudianteReporte
-                }
+                value={estudianteReporte}
                 onChange={(e) =>
                   setEstudianteReporte(
                     e.target.value
                   )
                 }
-                disabled={
-                  !cursoReporte
-                }
+                disabled={!cursoReporte}
               >
 
                 <option value="">
@@ -1258,19 +1356,15 @@ function HomePage() {
                   (estudiante) => (
 
                     <option
-                      key={
-                        estudiante.id
-                      }
+                      key={estudiante.id}
                       value={
                         estudiante.id
                       }
                     >
-                      {
-                        estudiante.nombre
-                      }{" "}
-                      {
-                        estudiante.apellido
-                      }
+
+                      {estudiante.nombre}{" "}
+                      {estudiante.apellido}
+
                     </option>
 
                   )
@@ -1279,6 +1373,7 @@ function HomePage() {
               </select>
 
             </div>
+
 
             <div className="campo">
 
@@ -1299,6 +1394,7 @@ function HomePage() {
 
             </div>
 
+
             <div className="modal-info-reporte">
 
               <span>
@@ -1309,12 +1405,29 @@ function HomePage() {
 
                 <strong>
                   Profesor:{" "}
-                  {JSON.parse(
-                    localStorage.getItem(
-                      "usuarioActual"
-                    ) ||
-                      '{"nombre":"Usuario"}'
-                  ).nombre}
+
+                  {(() => {
+
+                    try {
+
+                      return (
+                        JSON.parse(
+                          localStorage.getItem(
+                            "usuarioActual"
+                          ) ||
+                          '{"nombre":"Usuario"}'
+                        ).nombre ||
+                        "Usuario"
+                      );
+
+                    } catch {
+
+                      return "Usuario";
+
+                    }
+
+                  })()}
+
                 </strong>
 
                 <small>
@@ -1325,6 +1438,7 @@ function HomePage() {
               </div>
 
             </div>
+
 
             <div className="modal-botones">
 
@@ -1357,6 +1471,375 @@ function HomePage() {
         </div>
 
       )}
+
+
+      {/* =====================================================
+          MODAL GESTIONAR ASIENTOS
+          ===================================================== */}
+
+      {mostrarGestionAsientos && (
+
+        <div className="home-modal-fondo">
+
+          <div className="home-modal modal-gestion-asientos">
+
+            <div className="modal-titulo">
+
+              <div>
+
+                <h2>
+                  🪑 Gestionar asientos
+                </h2>
+
+                <p>
+                  Consulta la ocupación de un curso
+                  y administra sus asientos.
+                </p>
+
+              </div>
+
+              <button
+                className="cerrar-modal"
+                onClick={
+                  cerrarGestionAsientos
+                }
+              >
+                ×
+              </button>
+
+            </div>
+
+
+            <div className="campo">
+
+              <label>
+                Seleccionar curso
+              </label>
+
+              <select
+                value={
+                  cursoGestionAsientos
+                }
+                onChange={(e) =>
+                  setCursoGestionAsientos(
+                    e.target.value
+                  )
+                }
+              >
+
+                <option value="">
+                  Seleccionar curso
+                </option>
+
+                {cursos.map(
+                  (cursoItem) => (
+
+                    <option
+                      key={cursoItem}
+                      value={cursoItem}
+                    >
+                      {cursoItem}
+                    </option>
+
+                  )
+                )}
+
+              </select>
+
+            </div>
+
+
+            {cursoGestionAsientos && (
+
+              <div className="gestion-resumen">
+
+                <div className="gestion-dato">
+
+                  <span className="gestion-icono azul">
+                    👥
+                  </span>
+
+                  <div>
+
+                    <small>
+                      Estudiantes
+                    </small>
+
+                    <strong>
+                      {estudiantesGestion.length}
+                    </strong>
+
+                  </div>
+
+                </div>
+
+
+                <div className="gestion-dato">
+
+                  <span className="gestion-icono amarillo">
+                    🪑
+                  </span>
+
+                  <div>
+
+                    <small>
+                      Ocupados
+                    </small>
+
+                    <strong>
+                      {ocupadosGestion}
+                    </strong>
+
+                  </div>
+
+                </div>
+
+
+                <div className="gestion-dato">
+
+                  <span className="gestion-icono verde">
+                    ✓
+                  </span>
+
+                  <div>
+
+                    <small>
+                      Libres
+                    </small>
+
+                    <strong>
+                      {libresGestion}
+                    </strong>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            )}
+
+
+            {!cursoGestionAsientos && (
+
+              <div className="gestion-vacio">
+                🪑
+                <p>
+                  Selecciona un curso para
+                  consultar sus asientos.
+                </p>
+              </div>
+
+            )}
+
+
+            {cursoGestionAsientos && (
+
+              <div className="gestion-info">
+
+                <strong>
+                  {cursoGestionAsientos}
+                </strong>
+
+                <span>
+                  {ocupadosGestion} de{" "}
+                  {CAPACIDAD_POR_CURSO} asientos
+                  ocupados
+                </span>
+
+              </div>
+
+            )}
+
+
+            <div className="modal-botones">
+
+              <button
+                className="boton-cancelar-home"
+                onClick={
+                  cerrarGestionAsientos
+                }
+              >
+                Cancelar
+              </button>
+
+              <button
+                className="boton-guardar-home"
+                onClick={
+                  verAsientosDelCurso
+                }
+                disabled={
+                  !cursoGestionAsientos
+                }
+              >
+                Ver asientos
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      )}
+
+
+      {/* =====================================================
+          MODAL ESTADO DE TODOS LOS CURSOS
+          ===================================================== */}
+
+      {mostrarEstadoCursos && (
+
+        <div className="home-modal-fondo">
+
+          <div className="home-modal modal-estado-cursos">
+
+            <div className="modal-titulo">
+
+              <div>
+
+                <h2>
+                  📊 Estado de los cursos
+                </h2>
+
+                <p>
+                  Ocupación actual de todos
+                  los cursos.
+                </p>
+
+              </div>
+
+              <button
+                className="cerrar-modal"
+                onClick={
+                  cerrarEstadoCursos
+                }
+              >
+                ×
+              </button>
+
+            </div>
+
+
+            <div className="estado-cursos-lista">
+
+              {cursosEstado.map(
+                (cursoItem) => {
+
+                  const porcentaje =
+                    cursoItem.porcentaje;
+
+                  const claseBarra =
+                    porcentaje <= 10
+                      ? "barra roja"
+                      : porcentaje <= 60
+                      ? "barra amarilla"
+                      : "barra verde";
+
+                  return (
+
+                    <div
+                      className="estado-curso-item"
+                      key={
+                        cursoItem.nombreCurso
+                      }
+                    >
+
+                      <div className="estado-curso-cabecera">
+
+                        <strong>
+                          {
+                            cursoItem.nombreCurso
+                          }
+                        </strong>
+
+                        <span>
+                          {
+                            cursoItem.ocupados
+                          } / 35
+                        </span>
+
+                      </div>
+
+
+                      <div className="estado-curso-barra">
+
+                        <div className="barra-contenedor">
+
+                          <div
+                            className={
+                              claseBarra
+                            }
+                            style={{
+                              width:
+                                `${porcentaje}%`,
+                            }}
+                          />
+
+                        </div>
+
+                        <strong>
+                          {porcentaje}%
+                        </strong>
+
+                      </div>
+
+
+                      <div className="estado-curso-pie">
+
+                        <span>
+                          🪑{" "}
+                          {
+                            cursoItem.ocupados
+                          } ocupados
+                        </span>
+
+                        <span>
+                          🟢{" "}
+                          {
+                            cursoItem.libres
+                          } libres
+                        </span>
+
+                      </div>
+
+                    </div>
+
+                  );
+
+                }
+              )}
+
+            </div>
+
+
+            <div className="modal-botones">
+
+              <button
+                className="boton-cancelar-home"
+                onClick={
+                  cerrarEstadoCursos
+                }
+              >
+                Cerrar
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      )}
+
+
+      <span
+        style={{
+          display: "none",
+        }}
+      >
+        {actualizacion}
+      </span>
 
     </div>
   );

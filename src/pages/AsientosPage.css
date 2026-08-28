@@ -55,7 +55,6 @@
 .selector-curso select {
   width: 100%;
   padding: 12px;
-
   box-sizing: border-box;
 
   background: #082744;
@@ -92,7 +91,8 @@
 
   border-radius: 12px;
 
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.25);
 }
 
 
@@ -192,7 +192,8 @@
 .parte-superior {
   display: grid;
 
-  grid-template-columns: 110px 1fr 110px;
+  grid-template-columns:
+    110px 1fr 110px;
 
   align-items: center;
 
@@ -300,48 +301,14 @@
 
 
 /* =========================
-   RESUMEN DE ASIENTOS
-   ========================= */
-
-.resumen-asientos {
-  display: flex;
-
-  gap: 25px;
-
-  margin-bottom: 20px;
-
-  color: white;
-
-  font-size: 13px;
-}
-
-.resumen-asientos div {
-  display: flex;
-
-  gap: 5px;
-
-  align-items: center;
-}
-
-.resumen-asientos strong {
-  color: #f5c400;
-
-  font-size: 15px;
-}
-
-.resumen-asientos span {
-  color: #9eb4cc;
-}
-
-
-/* =========================
    ASIENTOS
    ========================= */
 
 .asientos {
   display: grid;
 
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns:
+    repeat(5, 1fr);
 
   gap: 15px;
 
@@ -399,7 +366,7 @@
   color: #f5c400;
 }
 
-.asiento span {
+.asiento > span:not(.indicador-reporte) {
   margin-top: 6px;
 
   color: #7891aa;
@@ -420,7 +387,8 @@
   border-color: #f5c400;
 }
 
-.asiento.ocupado span {
+.asiento.ocupado
+  > span:not(.indicador-reporte) {
   color: #dce7f3;
 
   font-weight: bold;
@@ -487,7 +455,8 @@
 
   height: 100%;
 
-  background: rgba(0, 0, 0, 0.70);
+  background:
+    rgba(0, 0, 0, 0.70);
 
   display: flex;
 
@@ -528,7 +497,9 @@
 
   border-radius: 10px;
 
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+  box-shadow:
+    0 15px 40px
+    rgba(0, 0, 0, 0.4);
 }
 
 .formulario-asiento h2 {
@@ -610,15 +581,9 @@
   border-color: #f5c400;
 }
 
-.formulario-asiento input[readonly] {
-  color: #9eb4cc;
-
-  background: #061f3a;
-}
-
 
 /* =========================
-   BOTONES DEL ASIENTO
+   BOTONES
    ========================= */
 
 .botones-asiento {
@@ -690,6 +655,14 @@
   background: transparent;
 
   color: white;
+
+  padding: 10px 18px;
+
+  border-radius: 6px;
+
+  cursor: pointer;
+
+  font-weight: bold;
 }
 
 .boton-cancelar:hover {
@@ -789,7 +762,176 @@
 
 
 /* =========================
-   SCROLL DEL MODAL
+   MODAL REPORTE
+   ========================= */
+
+.modal-reporte-asiento {
+  width: 500px;
+}
+
+.modal-titulo-reporte {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: flex-start;
+
+  gap: 15px;
+
+  margin-bottom: 20px;
+}
+
+.modal-titulo-reporte h2 {
+  margin: 0;
+
+  text-align: left;
+
+  color: white;
+
+  font-size: 22px;
+}
+
+.modal-titulo-reporte p {
+  margin: 6px 0 0;
+
+  color: #9eb4cc;
+
+  font-size: 12px;
+}
+
+.cerrar-modal-reporte {
+  width: 32px;
+
+  height: 32px;
+
+  border: none;
+
+  background: transparent;
+
+  color: #9eb4cc;
+
+  font-size: 28px;
+
+  line-height: 1;
+
+  cursor: pointer;
+
+  border-radius: 6px;
+}
+
+.cerrar-modal-reporte:hover {
+  background: #123f68;
+
+  color: white;
+}
+
+
+/* =========================
+   INFORMACION DEL REPORTE
+   ========================= */
+
+.modal-info-reporte {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  margin-top: 18px;
+
+  padding: 12px;
+
+  background: #061f3a;
+
+  border: 1px solid #24476b;
+
+  border-radius: 8px;
+}
+
+.modal-info-reporte > span {
+  width: 38px;
+
+  height: 38px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  background: #123f68;
+
+  border-radius: 50%;
+
+  font-size: 20px;
+}
+
+.modal-info-reporte div {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+.modal-info-reporte strong {
+  color: white;
+
+  font-size: 12px;
+}
+
+.modal-info-reporte small {
+  color: #9eb4cc;
+
+  font-size: 10px;
+}
+
+
+/* =========================
+   BOTONES MODAL REPORTE
+   ========================= */
+
+.modal-botones-reporte {
+  display: flex;
+
+  justify-content: flex-end;
+
+  gap: 10px;
+
+  margin-top: 22px;
+}
+
+.boton-reporte-home {
+  border: none;
+
+  padding: 10px 18px;
+
+  background: #c0392b;
+
+  color: white;
+
+  border-radius: 6px;
+
+  cursor: pointer;
+
+  font-weight: bold;
+
+  font-size: 13px;
+}
+
+.boton-reporte-home:hover {
+  background: #a93226;
+}
+
+.boton-reporte-home:disabled {
+  opacity: 0.45;
+
+  cursor: not-allowed;
+}
+
+
+/* =========================
+   SCROLL
    ========================= */
 
 .formulario-asiento::-webkit-scrollbar,
@@ -843,7 +985,8 @@
   }
 
   .asientos {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns:
+      repeat(2, 1fr);
   }
 
   .encabezado-aula {
@@ -858,6 +1001,14 @@
 
   .leyenda-reporte {
     justify-content: center;
+  }
+
+  .modal-botones-reporte {
+    flex-direction: column;
+  }
+
+  .modal-botones-reporte button {
+    width: 100%;
   }
 
 }
@@ -885,7 +1036,7 @@
     font-size: 13px;
   }
 
-  .asiento span {
+  .asiento > span:not(.indicador-reporte) {
     font-size: 9px;
   }
 

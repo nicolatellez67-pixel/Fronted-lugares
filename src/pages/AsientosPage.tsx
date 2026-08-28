@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import "./AsientosPage.css";
 
@@ -14,6 +14,8 @@ type Estudiante = {
   apellido: string;
   curso: string;
   tutor: string;
+  telefonoTutor?: string;
+  telefono?: string;
 };
 
 type Asignacion = {
@@ -73,10 +75,17 @@ const filas = [
   "G",
 ];
 
-function AsientosPage() {
+function obtenerCursoInicial() {
+  const parametros = new URLSearchParams(
+    window.location.search
+  );
 
+  return parametros.get("curso") || "";
+}
+
+function AsientosPage() {
   const [cursoSeleccionado, setCursoSeleccionado] =
-    useState("");
+    useState(obtenerCursoInicial);
 
   const [mostrarFormulario, setMostrarFormulario] =
     useState(false);
@@ -87,168 +96,166 @@ function AsientosPage() {
   const [estudianteSeleccionado, setEstudianteSeleccionado] =
     useState("");
 
-  // =========================
-  // REPORTES
-  // =========================
+  const [reportes, setReportes] = useState<Reporte[]>(() => {
+    try {
+      return JSON.parse(
+        localStorage.getItem("reportes") || "[]"
+      );
+    } catch {
+      return [];
+    }
+  });
 
   const [mostrarReporte, setMostrarReporte] =
     useState(false);
 
-  const [estudianteReportado, setEstudianteReportado] =
+  const [cursoReporte, setCursoReporte] =
+    useState("");
+
+  const [estudianteReporte, setEstudianteReporte] =
     useState("");
 
   const [observacion, setObservacion] =
     useState("");
 
-  const [reportes, setReportes] =
-    useState<Reporte[]>(() => {
-
-      const datos =
-        localStorage.getItem(
-          "reportes"
-        );
-
-      return datos
-        ? JSON.parse(datos)
-        : [];
-    });
-
-  // =========================
-  // ASIGNACIONES
-  // =========================
-
   const [asignaciones, setAsignaciones] =
-    useState<
-      Record<string, Asignacion[]>
-    >(() => {
+    useState<Record<string, Asignacion[]>>(() => {
+      try {
+        const datos = localStorage.getItem("asignaciones");
 
-      const datos =
-        localStorage.getItem(
-          "asignaciones"
-        );
-
-      if (!datos) {
+        return datos ? JSON.parse(datos) : {};
+      } catch {
         return {};
       }
-
-      const asignacionesGuardadas =
-        JSON.parse(datos);
-
-      const asignacionesCorregidas:
-        Record<
-          string,
-          Asignacion[]
-        > = {};
-
-      Object.keys(
-        asignacionesGuardadas
-      ).forEach((curso) => {
-
-        asignacionesCorregidas[
-          curso
-        ] =
-          asignacionesGuardadas[
-            curso
-          ].map(
-            (
-              asignacion: Partial<Asignacion>
-            ) => ({
-
-              ...asignacion,
-
-              asignacionId:
-                asignacion.asignacionId ||
-                Date.now() +
-                  Math.floor(
-                    Math.random() *
-                      1000000
-                  ),
-
-            })
-          );
-
-      });
-
-      localStorage.setItem(
-        "asignaciones",
-        JSON.stringify(
-          asignacionesCorregidas
-        )
-      );
-
-      return asignacionesCorregidas;
     });
 
-  const estudiantes: Estudiante[] =
-    JSON.parse(
-      localStorage.getItem(
-        "estudiantes"
-      ) || "[]"
+  const estudiantes: Estudiante[] = (() => {
+    try {
+      return JSON.parse(
+        localStorage.getItem("estudiantes") || "[]"
+      );
+    } catch {
+      return [];
+    }
+  })();
+
+  /*
+   * =========================
+   * ACTUALIZAR REPORTES
+   * =========================
+   */
+
+  useEffect(() => {
+    function actualizarReportes() {
+      try {
+        const datos = JSON.parse(
+          localStorage.getItem("reportes") || "[]"
+        );
+
+        setReportes(datos);
+      } catch {
+        setReportes([]);
+      }
+    }
+
+    actualizarReportes();
+
+    window.addEventListener(
+      "reportesActualizados",
+      actualizarReportes
     );
 
-  // =========================
-  // ESTUDIANTES DEL CURSO
-  // =========================
+    window.addEventListener(
+      "storage",
+      actualizarReportes
+    );
+
+    return () => {
+      window.removeEventListener(
+        "reportesActualizados",
+        actualizarReportes
+      );
+
+      window.removeEventListener(
+        "storage",
+        actualizarReportes
+      );
+    };
+  }, []);
+
+  /*
+   * =========================
+   * ACTUALIZAR ASIGNACIONES
+   * =========================
+   */
+
+  useEffect(() => {
+    function actualizarAsignaciones() {
+      try {
+        const datos = JSON.parse(
+          localStorage.getItem("asignaciones") || "{}"
+        );
+
+        setAsignaciones(datos);
+      } catch {
+        setAsignaciones({});
+      }
+    }
+
+    actualizarAsignaciones();
+
+    window.addEventListener(
+      "asignacionesActualizadas",
+      actualizarAsignaciones
+    );
+
+    window.addEventListener(
+      "storage",
+      actualizarAsignaciones
+    );
+
+    return () => {
+      window.removeEventListener(
+        "asignacionesActualizadas",
+        actualizarAsignaciones
+      );
+
+      window.removeEventListener(
+        "storage",
+        actualizarAsignaciones
+      );
+    };
+  }, []);
+
+  /*
+   * =========================
+   * DATOS DEL CURSO
+   * =========================
+   */
 
   const estudiantesDelCurso =
     estudiantes.filter(
       (estudiante) =>
-        estudiante.curso
-          .trim()
-          .toLowerCase() ===
-        cursoSeleccionado
-          .trim()
-          .toLowerCase()
+        estudiante.curso.trim().toLowerCase() ===
+        cursoSeleccionado.trim().toLowerCase()
     );
 
   const asignacionesDelCurso =
-    asignaciones[
-      cursoSeleccionado
-    ] || [];
+    asignaciones[cursoSeleccionado] || [];
 
-  const asientosLibres =
-    CAPACIDAD_CURSO -
-    asignacionesDelCurso.length;
-
-  // =========================
-  // ESTUDIANTES CON ASIENTO
-  // =========================
-
-  const estudiantesAsignadosDelCurso =
-    estudiantesDelCurso.filter(
-      (estudiante) =>
-        asignacionesDelCurso.some(
-          (asignacion) =>
-            asignacion.estudianteId ===
-            estudiante.id
-        )
-    );
-
-  // =========================
-  // OBTENER ASIGNACIÓN
-  // =========================
-
-  function obtenerAsignacion(
-    asiento: string
-  ) {
-    return asignacionesDelCurso.find(
-      (item) =>
-        item.asiento ===
-        asiento
-    );
-  }
-
-  // =========================
-  // OBTENER ESTUDIANTE
-  // =========================
+  /*
+   * =========================
+   * OBTENER ESTUDIANTE
+   * =========================
+   */
 
   function obtenerEstudiante(
     asiento: string
   ) {
-
     const asignacion =
-      obtenerAsignacion(
-        asiento
+      asignacionesDelCurso.find(
+        (item) =>
+          item.asiento === asiento
       );
 
     if (!asignacion) {
@@ -262,18 +269,32 @@ function AsientosPage() {
     );
   }
 
-  // =========================
-  // REPORTES DEL ASIENTO
-  // =========================
+  /*
+   * =========================
+   * OBTENER ASIGNACION
+   * =========================
+   */
+
+  function obtenerAsignacion(
+    asiento: string
+  ) {
+    return asignacionesDelCurso.find(
+      (item) =>
+        item.asiento === asiento
+    );
+  }
+
+  /*
+   * =========================
+   * REPORTES DE UN ASIENTO
+   * =========================
+   */
 
   function obtenerReportesDelAsiento(
     asiento: string
   ) {
-
     const asignacion =
-      obtenerAsignacion(
-        asiento
-      );
+      obtenerAsignacion(asiento);
 
     if (!asignacion) {
       return [];
@@ -281,88 +302,74 @@ function AsientosPage() {
 
     return reportes.filter(
       (reporte) =>
-        reporte.curso ===
-          cursoSeleccionado &&
         reporte.asignacionId ===
-          asignacion.asignacionId
+        asignacion.asignacionId
     );
   }
 
-  // =========================
-  // ABRIR ASIENTO
-  // =========================
+  /*
+   * =========================
+   * ABRIR ASIENTO
+   * =========================
+   */
 
   function abrirAsiento(
     asiento: string
   ) {
-
     const estudiante =
-      obtenerEstudiante(
-        asiento
-      );
+      obtenerEstudiante(asiento);
 
     setAsientoSeleccionado(
       asiento
     );
 
     if (estudiante) {
-
       setEstudianteSeleccionado(
-        String(
-          estudiante.id
-        )
+        String(estudiante.id)
       );
-
     } else {
-
-      setEstudianteSeleccionado(
-        ""
-      );
-
+      setEstudianteSeleccionado("");
     }
 
-    setMostrarFormulario(
-      true
-    );
+    setMostrarFormulario(true);
   }
 
-  // =========================
-  // HISTORIAL
-  // =========================
+  /*
+   * =========================
+   * HISTORIAL
+   * =========================
+   */
 
   function guardarEnHistorial(
     estudiante: Estudiante,
     accion: string,
     asiento: string
   ) {
+    let historial: any[] = [];
 
-    const datos =
-      localStorage.getItem(
-        "historial"
-      );
+    try {
+      const datos =
+        localStorage.getItem(
+          "historial"
+        );
 
-    const historial =
-      datos
+      historial = datos
         ? JSON.parse(datos)
         : [];
+    } catch {
+      historial = [];
+    }
 
     const nuevoRegistro = {
-
       id: Date.now(),
-
       fecha:
         new Date().toLocaleString(),
-
       estudiante:
         `${estudiante.nombre} ${estudiante.apellido}`,
-
       curso:
         cursoSeleccionado,
-
       accion,
-
       asiento,
-
     };
 
     historial.push(
@@ -371,20 +378,18 @@ function AsientosPage() {
 
     localStorage.setItem(
       "historial",
-      JSON.stringify(
-        historial
-      )
+      JSON.stringify(historial)
     );
   }
 
-  // =========================
-  // GUARDAR ASIGNACIÓN
-  // =========================
+  /*
+   * =========================
+   * GUARDAR ASIGNACION
+   * =========================
+   */
 
   function guardarAsignacion() {
-
     if (!estudianteSeleccionado) {
-
       alert(
         "Selecciona un estudiante"
       );
@@ -406,8 +411,9 @@ function AsientosPage() {
             asientoSeleccionado
       );
 
-    if (estudianteYaTieneAsiento) {
-
+    if (
+      estudianteYaTieneAsiento
+    ) {
       alert(
         "Este estudiante ya tiene un asiento asignado"
       );
@@ -425,7 +431,6 @@ function AsientosPage() {
       asientoYaOcupado.id !==
         estudianteId
     ) {
-
       alert(
         "Este asiento ya está ocupado"
       );
@@ -433,9 +438,11 @@ function AsientosPage() {
       return;
     }
 
-    const asignacionActual =
-      obtenerAsignacion(
-        asientoSeleccionado
+    const asignacionAnterior =
+      asignacionesDelCurso.find(
+        (asignacion) =>
+          asignacion.asiento ===
+          asientoSeleccionado
       );
 
     const nuevasAsignaciones =
@@ -446,43 +453,40 @@ function AsientosPage() {
       );
 
     /*
-     * Si es la misma persona
-     * en el mismo asiento,
-     * conserva su asignacionId.
+     * Si el mismo estudiante
+     * conserva el mismo asiento,
+     * mantenemos su asignacionId.
      *
-     * Si es una nueva asignación,
-     * recibe un nuevo ID.
+     * Si cambia de lugar, se genera
+     * un nuevo asignacionId.
      */
 
-    const nuevaAsignacion:
-      Asignacion = {
+    let nuevoAsignacionId =
+      Date.now();
 
+    if (
+      asignacionAnterior &&
+      asignacionAnterior.estudianteId ===
+        estudianteId
+    ) {
+      nuevoAsignacionId =
+        asignacionAnterior.asignacionId;
+    }
+
+    nuevasAsignaciones.push({
       asiento:
         asientoSeleccionado,
 
       estudianteId,
 
       asignacionId:
-        asignacionActual &&
-        asignacionActual.estudianteId ===
-          estudianteId
-          ? asignacionActual.asignacionId
-          : Date.now() +
-            Math.floor(
-              Math.random() *
-                1000000
-            ),
-    };
-
-    nuevasAsignaciones.push(
-      nuevaAsignacion
-    );
+        nuevoAsignacionId,
+    });
 
     if (
       nuevasAsignaciones.length >
       CAPACIDAD_CURSO
     ) {
-
       alert(
         "El curso ya alcanzó la capacidad máxima de 35 estudiantes"
       );
@@ -517,7 +521,6 @@ function AsientosPage() {
       );
 
     if (estudiante) {
-
       guardarEnHistorial(
         estudiante,
         "Asignación de asiento",
@@ -525,18 +528,27 @@ function AsientosPage() {
       );
     }
 
+    window.dispatchEvent(
+      new Event(
+        "asignacionesActualizadas"
+      )
+    );
+
     cerrarFormulario();
   }
 
-  // =========================
-  // LIBERAR ASIENTO
-  // =========================
+  /*
+   * =========================
+   * LIBERAR ASIENTO
+   * =========================
+   */
 
   function liberarAsiento() {
-
     const asignacion =
-      obtenerAsignacion(
-        asientoSeleccionado
+      asignacionesDelCurso.find(
+        (item) =>
+          item.asiento ===
+          asientoSeleccionado
       );
 
     const estudiante =
@@ -575,7 +587,6 @@ function AsientosPage() {
     );
 
     if (estudiante) {
-
       guardarEnHistorial(
         estudiante,
         "Liberación de asiento",
@@ -583,15 +594,22 @@ function AsientosPage() {
       );
     }
 
+    window.dispatchEvent(
+      new Event(
+        "asignacionesActualizadas"
+      )
+    );
+
     cerrarFormulario();
   }
 
-  // =========================
-  // CERRAR FORMULARIO
-  // =========================
+  /*
+   * =========================
+   * CERRAR MODAL ASIENTO
+   * =========================
+   */
 
   function cerrarFormulario() {
-
     setMostrarFormulario(
       false
     );
@@ -605,48 +623,96 @@ function AsientosPage() {
     );
   }
 
-  // =========================
-  // ABRIR REPORTE
-  // =========================
+  /*
+   * =========================
+   * ABRIR REPORTE
+   * =========================
+   */
 
   function abrirReporte() {
+    setCursoReporte(
+      cursoSeleccionado
+    );
 
-    setEstudianteReportado(
+    setEstudianteReporte(
       ""
     );
 
-    setObservacion("");
+    setObservacion(
+      ""
+    );
 
     setMostrarReporte(
       true
     );
   }
 
-  // =========================
-  // CERRAR REPORTE
-  // =========================
+  /*
+   * =========================
+   * CERRAR REPORTE
+   * =========================
+   */
 
   function cerrarReporte() {
-
     setMostrarReporte(
       false
     );
 
-    setEstudianteReportado(
+    setCursoReporte(
       ""
     );
 
-    setObservacion("");
+    setEstudianteReporte(
+      ""
+    );
+
+    setObservacion(
+      ""
+    );
   }
 
-  // =========================
-  // GUARDAR REPORTE
-  // =========================
+  /*
+   * =========================
+   * ESTUDIANTES PARA REPORTAR
+   * =========================
+   */
+
+  const estudiantesAsignadosDelCurso =
+    estudiantes.filter(
+      (estudiante) =>
+        estudiante.curso
+          .trim()
+          .toLowerCase() ===
+          cursoReporte
+            .trim()
+            .toLowerCase() &&
+        (
+          asignaciones[
+            cursoReporte
+          ] || []
+        ).some(
+          (asignacion) =>
+            asignacion.estudianteId ===
+            estudiante.id
+        )
+    );
+
+  /*
+   * =========================
+   * GUARDAR REPORTE
+   * =========================
+   */
 
   function guardarReporte() {
+    if (!cursoReporte) {
+      alert(
+        "Selecciona un curso"
+      );
 
-    if (!estudianteReportado) {
+      return;
+    }
 
+    if (!estudianteReporte) {
       alert(
         "Selecciona un estudiante"
       );
@@ -655,7 +721,6 @@ function AsientosPage() {
     }
 
     if (!observacion.trim()) {
-
       alert(
         "Escribe una observación"
       );
@@ -668,12 +733,11 @@ function AsientosPage() {
         (item) =>
           item.id ===
           Number(
-            estudianteReportado
+            estudianteReporte
           )
       );
 
     if (!estudiante) {
-
       alert(
         "No se encontró el estudiante"
       );
@@ -681,25 +745,42 @@ function AsientosPage() {
       return;
     }
 
-    /*
-     * Buscar su asiento actual
-     */
+    let asignacionesActuales:
+      Record<
+        string,
+        Asignacion[]
+      > = {};
+
+    try {
+      asignacionesActuales =
+        JSON.parse(
+          localStorage.getItem(
+            "asignaciones"
+          ) || "{}"
+        );
+    } catch {
+      asignacionesActuales =
+        {};
+    }
+
+    const asignacionesCurso =
+      asignacionesActuales[
+        cursoReporte
+      ] || [];
 
     const asignacion =
-      asignacionesDelCurso.find(
+      asignacionesCurso.find(
         (item) =>
           item.estudianteId ===
           estudiante.id
       );
 
     /*
-     * Seguridad:
-     * no se puede reportar
-     * a alguien sin asiento.
+     * NO SE PUEDE REPORTAR
+     * A UN ESTUDIANTE SIN ASIENTO
      */
 
     if (!asignacion) {
-
       alert(
         "Este estudiante no tiene un asiento asignado"
       );
@@ -707,17 +788,18 @@ function AsientosPage() {
       return;
     }
 
-    const usuarioGuardado =
-      localStorage.getItem(
-        "usuarioActual"
-      );
+    let usuario: any =
+      null;
 
-    const usuario =
-      usuarioGuardado
-        ? JSON.parse(
-            usuarioGuardado
-          )
-        : null;
+    try {
+      usuario = JSON.parse(
+        localStorage.getItem(
+          "usuarioActual"
+        ) || "null"
+      );
+    } catch {
+      usuario = null;
+    }
 
     const profesor =
       usuario?.nombre ||
@@ -738,40 +820,62 @@ function AsientosPage() {
         }
       );
 
+    let reportesActuales:
+      Reporte[] = [];
+
+    try {
+      reportesActuales =
+        JSON.parse(
+          localStorage.getItem(
+            "reportes"
+          ) || "[]"
+        );
+    } catch {
+      reportesActuales =
+        [];
+    }
+
     const nuevoReporte:
       Reporte = {
+        id: Date.now(),
 
-      id: Date.now(),
+        estudianteId:
+          estudiante.id,
 
-      estudianteId:
-        estudiante.id,
+        estudiante:
+          `${estudiante.nombre} ${estudiante.apellido}`,
 
-      estudiante:
-        `${estudiante.nombre} ${estudiante.apellido}`,
+        curso:
+          cursoReporte,
 
-      curso:
-        cursoSeleccionado,
+        asiento:
+          asignacion.asiento,
 
-      asiento:
-        asignacion.asiento,
+        /*
+         * MUY IMPORTANTE:
+         * El reporte queda ligado
+         * al asiento actual mediante
+         * el asignacionId.
+         */
 
-      asignacionId:
-        asignacion.asignacionId,
+        asignacionId:
+          asignacion.asignacionId,
 
-      fecha,
+        fecha,
 
-      hora,
+        hora,
 
-      profesor,
+        profesor,
 
-      observacion:
-        observacion.trim(),
-    };
+        observacion:
+          observacion.trim(),
+      };
 
-    const nuevosReportes = [
-      ...reportes,
-      nuevoReporte,
-    ];
+    const nuevosReportes =
+      [
+        ...reportesActuales,
+        nuevoReporte,
+      ];
 
     setReportes(
       nuevosReportes
@@ -784,6 +888,12 @@ function AsientosPage() {
       )
     );
 
+    window.dispatchEvent(
+      new Event(
+        "reportesActualizados"
+      )
+    );
+
     alert(
       "Reporte registrado correctamente"
     );
@@ -793,7 +903,6 @@ function AsientosPage() {
 
   return (
     <div className="asientos-layout">
-
       <Sidebar />
 
       <main className="asientos-page">
@@ -803,9 +912,13 @@ function AsientosPage() {
         </h1>
 
         <p>
-          Distribución de asientos de
-          los cursos de secundaria.
+          Distribución de asientos de los
+          cursos de secundaria.
         </p>
+
+        {/* =========================
+            SELECTOR DE CURSO
+            ========================= */}
 
         <div className="selector-curso">
 
@@ -818,15 +931,12 @@ function AsientosPage() {
               cursoSeleccionado
             }
             onChange={(e) => {
-
               setCursoSeleccionado(
                 e.target.value
               );
 
               cerrarFormulario();
-
               cerrarReporte();
-
             }}
           >
 
@@ -836,15 +946,15 @@ function AsientosPage() {
 
             {cursos.map(
               (curso) => (
-
                 <option
                   key={curso.id}
-                  value={`${curso.grado} ${curso.paralelo}`}
+                  value={
+                    `${curso.grado} ${curso.paralelo}`
+                  }
                 >
                   {curso.grado}{" "}
                   {curso.paralelo}
                 </option>
-
               )
             )}
 
@@ -856,10 +966,13 @@ function AsientosPage() {
 
           <div className="aula">
 
+            {/* =========================
+                ENCABEZADO
+                ========================= */}
+
             <div className="encabezado-aula">
 
               <div>
-
                 <h2>
                   {cursoSeleccionado}
                 </h2>
@@ -868,11 +981,9 @@ function AsientosPage() {
                   {
                     asignacionesDelCurso.length
                   }{" "}
-                  /{" "}
-                  {CAPACIDAD_CURSO}
-                  {" "}asientos ocupados
+                  / {CAPACIDAD_CURSO}{" "}
+                  asientos ocupados
                 </p>
-
               </div>
 
               <button
@@ -890,16 +1001,18 @@ function AsientosPage() {
 
             </div>
 
+            {/* =========================
+                PARTE SUPERIOR
+                ========================= */}
+
             <div className="parte-superior">
 
               <div className="puerta">
-
                 🚪
 
                 <span>
                   Puerta
                 </span>
-
               </div>
 
               <div className="pizarra">
@@ -907,58 +1020,18 @@ function AsientosPage() {
               </div>
 
               <div className="profesor">
-
-                👨‍🏫
+                🪑
 
                 <span>
                   Profesor
                 </span>
-
               </div>
 
             </div>
 
-            <div className="resumen-asientos">
-
-              <div>
-
-                <strong>
-                  {
-                    asignacionesDelCurso.length
-                  }
-                </strong>
-
-                <span>
-                  Ocupados
-                </span>
-
-              </div>
-
-              <div>
-
-                <strong>
-                  {asientosLibres}
-                </strong>
-
-                <span>
-                  Libres
-                </span>
-
-              </div>
-
-              <div>
-
-                <strong>
-                  {CAPACIDAD_CURSO}
-                </strong>
-
-                <span>
-                  Capacidad
-                </span>
-
-              </div>
-
-            </div>
+            {/* =========================
+                ASIENTOS
+                ========================= */}
 
             <div className="asientos">
 
@@ -1013,6 +1086,10 @@ function AsientosPage() {
                               : "Libre"}
                           </span>
 
+                          {/* =========================
+                              PUNTO ROJO
+                              ========================= */}
+
                           {cantidadReportes >
                             0 && (
 
@@ -1052,7 +1129,7 @@ function AsientosPage() {
 
         {/* =========================
             MODAL ASIENTO
-        ========================= */}
+            ========================= */}
 
         {mostrarFormulario && (
 
@@ -1115,7 +1192,7 @@ function AsientosPage() {
 
               {/* =========================
                   REPORTES DEL ASIENTO
-              ========================= */}
+                  ========================= */}
 
               {obtenerReportesDelAsiento(
                 asientoSeleccionado
@@ -1156,27 +1233,21 @@ function AsientosPage() {
                         </div>
 
                         <p>
-
                           <strong>
                             Profesor:
                           </strong>{" "}
-
                           {
                             reporte.profesor
                           }
-
                         </p>
 
                         <p>
-
                           <strong>
                             Observación:
                           </strong>{" "}
-
                           {
                             reporte.observacion
                           }
-
                         </p>
 
                       </div>
@@ -1187,6 +1258,10 @@ function AsientosPage() {
                 </div>
 
               )}
+
+              {/* =========================
+                  BOTONES
+                  ========================= */}
 
               <div className="botones-asiento">
 
@@ -1232,25 +1307,88 @@ function AsientosPage() {
         )}
 
         {/* =========================
-            MODAL REPORTE
-        ========================= */}
+            MODAL REPORTAR ESTUDIANTE
+            ========================= */}
 
         {mostrarReporte && (
 
           <div className="modal-fondo">
 
-            <div className="formulario-asiento">
+            <div className="formulario-asiento modal-reporte-asiento">
 
-              <h2>
-                ⚠️ Reportar estudiante
-              </h2>
+              <div className="modal-titulo-reporte">
 
-              <p>
-                Curso:{" "}
-                <strong>
-                  {cursoSeleccionado}
-                </strong>
-              </p>
+                <div>
+
+                  <h2>
+                    ⚠️ Reportar estudiante
+                  </h2>
+
+                  <p>
+                    Registra un reporte de comportamiento
+                  </p>
+
+                </div>
+
+                <button
+                  className="cerrar-modal-reporte"
+                  onClick={
+                    cerrarReporte
+                  }
+                >
+                  ×
+                </button>
+
+              </div>
+
+              {/* CURSO */}
+
+              <label>
+                Curso
+              </label>
+
+              <select
+                value={
+                  cursoReporte
+                }
+                onChange={(e) => {
+
+                  setCursoReporte(
+                    e.target.value
+                  );
+
+                  setEstudianteReporte(
+                    ""
+                  );
+
+                }}
+              >
+
+                <option value="">
+                  Seleccionar curso
+                </option>
+
+                {cursos.map(
+                  (curso) => (
+
+                    <option
+                      key={
+                        curso.id
+                      }
+                      value={
+                        `${curso.grado} ${curso.paralelo}`
+                      }
+                    >
+                      {curso.grado}{" "}
+                      {curso.paralelo}
+                    </option>
+
+                  )
+                )}
+
+              </select>
+
+              {/* ESTUDIANTE */}
 
               <label>
                 Estudiante
@@ -1258,17 +1396,27 @@ function AsientosPage() {
 
               <select
                 value={
-                  estudianteReportado
+                  estudianteReporte
                 }
                 onChange={(e) =>
-                  setEstudianteReportado(
+                  setEstudianteReporte(
                     e.target.value
                   )
+                }
+                disabled={
+                  !cursoReporte
                 }
               >
 
                 <option value="">
-                  Seleccionar estudiante
+
+                  {!cursoReporte
+                    ? "Primero selecciona un curso"
+                    : estudiantesAsignadosDelCurso.length ===
+                        0
+                    ? "No hay estudiantes con asiento"
+                    : "Seleccionar estudiante"}
+
                 </option>
 
                 {estudiantesAsignadosDelCurso.map(
@@ -1295,62 +1443,7 @@ function AsientosPage() {
 
               </select>
 
-              {estudiantesAsignadosDelCurso.length ===
-                0 && (
-
-                <p className="sin-estudiantes-reporte">
-                  No hay estudiantes con
-                  asiento asignado en este curso.
-                </p>
-
-              )}
-
-              <label>
-                Fecha
-              </label>
-
-              <input
-                type="text"
-                value={
-                  new Date().toLocaleDateString()
-                }
-                readOnly
-              />
-
-              <label>
-                Hora
-              </label>
-
-              <input
-                type="text"
-                value={
-                  new Date().toLocaleTimeString(
-                    [],
-                    {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    }
-                  )
-                }
-                readOnly
-              />
-
-              <label>
-                Profesor
-              </label>
-
-              <input
-                type="text"
-                value={
-                  JSON.parse(
-                    localStorage.getItem(
-                      "usuarioActual"
-                    ) || "{}"
-                  )?.nombre ||
-                  "Usuario"
-                }
-                readOnly
-              />
+              {/* OBSERVACION */}
 
               <label>
                 Observación
@@ -1365,14 +1458,71 @@ function AsientosPage() {
                     e.target.value
                   )
                 }
-                placeholder="Escriba la observación..."
-                rows={4}
+                placeholder="Escribe el motivo del reporte..."
+                rows={5}
               />
 
-              <div className="botones-asiento">
+              {/* INFORMACION */}
+
+              <div className="modal-info-reporte">
+
+                <span>
+                  👨‍🏫
+                </span>
+
+                <div>
+
+                  <strong>
+                    Profesor:{" "}
+                    {(() => {
+
+                      try {
+
+                        const usuario =
+                          JSON.parse(
+                            localStorage.getItem(
+                              "usuarioActual"
+                            ) ||
+                              '{"nombre":"Usuario"}'
+                          );
+
+                        return (
+                          usuario?.nombre ||
+                          "Usuario"
+                        );
+
+                      } catch {
+
+                        return "Usuario";
+
+                      }
+
+                    })()}
+                  </strong>
+
+                  <small>
+                    La fecha y hora se registrarán automáticamente.
+                  </small>
+
+                </div>
+
+              </div>
+
+              {/* BOTONES */}
+
+              <div className="modal-botones-reporte">
 
                 <button
-                  className="boton-guardar"
+                  className="boton-cancelar"
+                  onClick={
+                    cerrarReporte
+                  }
+                >
+                  Cancelar
+                </button>
+
+                <button
+                  className="boton-reporte-home"
                   onClick={
                     guardarReporte
                   }
@@ -1384,15 +1534,6 @@ function AsientosPage() {
                   Registrar reporte
                 </button>
 
-                <button
-                  className="boton-cancelar"
-                  onClick={
-                    cerrarReporte
-                  }
-                >
-                  Cancelar
-                </button>
-
               </div>
 
             </div>
@@ -1402,7 +1543,6 @@ function AsientosPage() {
         )}
 
       </main>
-
     </div>
   );
 }
