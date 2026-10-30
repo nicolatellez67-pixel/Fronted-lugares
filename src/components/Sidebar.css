@@ -1,227 +1,267 @@
+/* SIDEBAR DE ESCRITORIO */
+
 .sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+
   width: 220px;
   height: 100vh;
+
   background: #001b33;
   color: white;
+
   display: flex;
   flex-direction: column;
-  position: fixed;
-  left: 0;
-  top: 0;
+
+  z-index: 1000;
+
   box-sizing: border-box;
-  border-right: 1px solid #173b5c;
-  z-index: 10;
+  overflow-y: auto;
 }
 
-/* ENCABEZADO */
+/* CABECERA */
 
 .sidebar-header {
-  text-align: center;
-  padding: 20px 10px 15px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 25px 18px;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.logo-don-bosco {
-  width: 58px;
-  height: 58px;
-  margin: 0 auto 8px;
-}
-
-.logo-don-bosco img {
-  width: 100%;
-  height: 100%;
+.sidebar-logo {
+  width: 48px;
+  height: 48px;
   object-fit: contain;
 }
 
-.sidebar-header h2 {
+.sidebar-titulo h2 {
   margin: 0;
-  font-size: 19px;
-  color: white;
+  color: #f5c400;
+  font-size: 17px;
 }
 
-.sidebar-header p {
-  margin: 5px 0 0;
-  font-size: 10px;
-  color: #b8c9d8;
-  line-height: 1.4;
+.sidebar-titulo span {
+  display: block;
+  margin-top: 4px;
+  font-size: 11px;
+  color: #a9bdd0;
 }
 
-/* MENÚ */
+/* NAVEGACIÓN */
 
 .sidebar-nav {
-  flex: 1;
-  overflow-y: auto;
-  padding: 10px 7px;
-}
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
 
-.sidebar-nav::-webkit-scrollbar {
-  width: 5px;
-}
-
-.sidebar-nav::-webkit-scrollbar-thumb {
-  background: #245276;
-  border-radius: 10px;
+  padding: 22px 12px;
 }
 
 .sidebar-nav a {
   display: flex;
   align-items: center;
-  gap: 18px;
-  height: 48px;
-  padding: 0 18px;
-  margin-bottom: 5px;
-  box-sizing: border-box;
-  border-radius: 8px;
-  color: white;
+  gap: 14px;
+
+  padding: 13px 14px;
+
+  color: #dce7f3;
   text-decoration: none;
+
+  border-radius: 8px;
+
   font-size: 14px;
+  transition: 0.2s;
 }
 
-.sidebar-nav a:hover {
-  background: #092d4d;
-}
-
+.sidebar-nav a:hover,
 .sidebar-nav a.active {
-  background: #f8c400;
-  color: #001b33;
-  font-weight: bold;
+  background: #123f67;
+  color: #f5c400;
 }
 
-.icono {
-  width: 18px;
+.sidebar-icon {
+  width: 22px;
   text-align: center;
-  font-size: 17px;
+  font-size: 20px;
 }
 
 /* USUARIO */
 
-.usuario-sidebar {
-  margin: 8px 7px;
-  padding: 12px;
-  border: 1px solid #285276;
-  border-radius: 9px;
+.sidebar-usuario {
   display: flex;
   align-items: center;
   gap: 12px;
-  background: #062744;
-  box-sizing: border-box;
+
+  margin-top: auto;
+  padding: 18px;
+
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.usuario-logo {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  background: #f8c400;
+.usuario-avatar {
+  width: 38px;
+  height: 38px;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
-  flex-shrink: 0;
+
+  background: #f5c400;
+  color: #001b33;
+
+  border-radius: 50%;
+  font-weight: bold;
 }
 
-.usuario-logo img {
-  width: 34px;
-  height: 34px;
-  object-fit: contain;
-}
-
-.usuario-datos {
+.usuario-info {
   display: flex;
   flex-direction: column;
+  gap: 4px;
   min-width: 0;
 }
 
-.usuario-datos strong {
+.usuario-info strong {
   font-size: 13px;
-  color: white;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
 }
 
-.usuario-datos span {
-  margin-top: 5px;
-  font-size: 10px;
-  color: #a9bfd1;
+.usuario-info span {
+  font-size: 11px;
+  color: #a9bdd0;
 }
 
 /* CERRAR SESIÓN */
 
-.boton-cerrar-sesion {
-  width: calc(100% - 30px);
-  margin: 5px 15px 15px;
-  padding: 10px;
+.sidebar-footer {
+  padding: 15px;
+}
+
+.sidebar-footer button {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 12px;
+
+  background: #12304c;
   border: none;
-  border-radius: 7px;
-  background: #c0392b;
+  border-radius: 8px;
+
   color: white;
-  font-weight: bold;
   cursor: pointer;
-  font-size: 12px;
+
+  font-size: 13px;
 }
 
-.boton-cerrar-sesion:hover {
-  background: #a93226;
+.sidebar-footer button:hover {
+  background: #74343b;
 }
 
-/* ADAPTACIÓN */
+/* BARRA MÓVIL: OCULTA EN ESCRITORIO */
+
+.mobile-topbar {
+  display: none;
+}
+
+.sidebar-overlay {
+  display: none;
+}
+
+/* TABLETS Y CELULARES */
 
 @media (max-width: 800px) {
-  .sidebar {
-    width: 180px;
+  .mobile-topbar {
+    height: 60px;
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 18px;
+    box-sizing: border-box;
+
+    background: #001b33;
+
+    position: relative;
+    z-index: 1002;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
 
-  .sidebar-nav a {
-    padding: 0 12px;
+  .mobile-brand {
+    display: flex;
+    align-items: center;
     gap: 10px;
-    font-size: 13px;
+
+    color: #f5c400;
+    font-weight: bold;
+    font-size: 15px;
   }
 
-  .usuario-sidebar {
-    padding: 8px;
+  .mobile-brand img {
+    width: 38px;
+    height: 38px;
+    object-fit: contain;
   }
-}
 
-@media (max-width: 600px) {
+  .mobile-menu-button {
+    width: 42px;
+    height: 42px;
+
+    background: #123f67;
+    border: 1px solid #315d87;
+    border-radius: 8px;
+
+    color: #f5c400;
+    font-size: 25px;
+
+    cursor: pointer;
+  }
+
   .sidebar {
-    width: 70px;
+    top: 60px;
+    left: 0;
+
+    width: 270px;
+    height: calc(100vh - 60px);
+
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+
+    z-index: 1001;
   }
 
-  .sidebar-header h2,
-  .sidebar-header p,
-  .sidebar-nav a span:not(.icono),
-  .usuario-datos {
-    display: none;
+  .sidebar.abierto {
+    transform: translateX(0);
+  }
+
+  .sidebar-overlay {
+    display: block;
+
+    position: fixed;
+    top: 60px;
+    left: 0;
+
+    width: 100%;
+    height: calc(100vh - 60px);
+
+    background: rgba(0, 0, 0, 0.55);
+
+    z-index: 1000;
   }
 
   .sidebar-header {
-    padding: 15px 5px;
+    padding: 20px 18px;
   }
 
-  .logo-don-bosco {
-    width: 45px;
-    height: 45px;
-  }
-
-  .sidebar-nav a {
-    justify-content: center;
-    padding: 0;
-    gap: 0;
-  }
-
-  .usuario-sidebar {
-    justify-content: center;
-    padding: 7px;
-    margin: 5px;
-  }
-
-  .boton-cerrar-sesion {
-    width: calc(100% - 10px);
-    margin: 5px;
-    font-size: 0;
-  }
-
-  .boton-cerrar-sesion::before {
-    content: "↪";
-    font-size: 18px;
+  .sidebar-nav {
+    padding: 18px 12px;
   }
 }

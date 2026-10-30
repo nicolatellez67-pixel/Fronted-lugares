@@ -1,211 +1,148 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
-import {
-  getUsuario,
-  logout,
-} from "../repositories/authRepository";
+import { getUsuario, logout } from "../repositories/authRepository";
 import "./Sidebar.css";
 
 function Sidebar() {
   const usuario = getUsuario();
+  const esAdmin = usuario?.rol === "ADMIN";
 
-  const nombre = usuario?.nombre || "Usuario";
+  const [menuAbierto, setMenuAbierto] = useState(false);
+  const sidebarRef = useRef<HTMLElement>(null);
 
-  let funcion = "Maestro";
-
-  if (usuario?.rol === "ADMIN") {
-    funcion = "Administrador";
-  }
-
-  if (usuario?.rol === "DOCENTE") {
-    funcion = "Maestro";
-  }
-
-  if (usuario?.rol === "TUTOR") {
-    funcion = "Maestro";
-  }
-
-  const menuRef = useRef<HTMLElement | null>(null);
-
-  // Recuperar posición del menú
   useEffect(() => {
-    const posicionGuardada =
-      sessionStorage.getItem("sidebarScroll");
+    const posicionGuardada = sessionStorage.getItem("sidebarScroll");
 
-    if (menuRef.current && posicionGuardada) {
-      requestAnimationFrame(() => {
-        if (menuRef.current) {
-          menuRef.current.scrollTop =
-            Number(posicionGuardada);
-        }
-      });
+    if (sidebarRef.current && posicionGuardada) {
+      sidebarRef.current.scrollTop = Number(posicionGuardada);
     }
   }, []);
 
-  // Guardar posición del menú
   function guardarPosicion() {
-    if (menuRef.current) {
+    if (sidebarRef.current) {
       sessionStorage.setItem(
         "sidebarScroll",
-        String(menuRef.current.scrollTop)
+        String(sidebarRef.current.scrollTop)
       );
     }
+
+    setMenuAbierto(false);
   }
 
-  // Cerrar sesión
   function cerrarSesion() {
     logout();
     window.location.href = "/login";
   }
 
   return (
-    <aside className="sidebar">
-
-      {/* ENCABEZADO */}
-      <div className="sidebar-header">
-
-        <div className="logo-don-bosco">
+    <>
+      {/* BARRA SUPERIOR PARA CELULARES */}
+      <div className="mobile-topbar">
+        <div className="mobile-brand">
           <img
             src="/escudo-don-bosco.png"
             alt="Escudo Don Bosco"
           />
+          <span>DON BOSCO</span>
         </div>
 
-        <h2>DON BOSCO</h2>
-
-        <p>
-          Sistema de asignación
-          <br />
-          de asientos
-        </p>
-
+        <button
+          className="mobile-menu-button"
+          onClick={() => setMenuAbierto(!menuAbierto)}
+          aria-label="Abrir menú"
+          aria-expanded={menuAbierto}
+        >
+          {menuAbierto ? "✕" : "☰"}
+        </button>
       </div>
 
+      {/* FONDO OSCURO */}
+      {menuAbierto && (
+        <div
+          className="sidebar-overlay"
+          onClick={() => setMenuAbierto(false)}
+        />
+      )}
 
-      {/* MENÚ */}
-      <nav
-        className="sidebar-nav"
-        ref={menuRef}
-        onScroll={guardarPosicion}
+      {/* SIDEBAR */}
+      <aside
+        ref={sidebarRef}
+        className={`sidebar ${menuAbierto ? "abierto" : ""}`}
       >
+        <div className="sidebar-header">
+          <img
+            src="/escudo-don-bosco.png"
+            alt="Escudo Don Bosco"
+            className="sidebar-logo"
+          />
 
-        <NavLink
-          to="/home"
-          className={({ isActive }) =>
-            isActive ? "active" : ""
-          }
-          onClick={guardarPosicion}
-        >
-          <span className="icono">⌂</span>
-          <span>Inicio</span>
-        </NavLink>
+          <div className="sidebar-titulo">
+            <h2>DON BOSCO</h2>
+            <span>Gestión de Asientos</span>
+          </div>
+        </div>
 
-
-        <NavLink
-          to="/estudiantes"
-          className={({ isActive }) =>
-            isActive ? "active" : ""
-          }
-          onClick={guardarPosicion}
-        >
-          <span className="icono">♙</span>
-          <span>Estudiantes</span>
-        </NavLink>
-
-
-        <NavLink
-          to="/cursos"
-          className={({ isActive }) =>
-            isActive ? "active" : ""
-          }
-          onClick={guardarPosicion}
-        >
-          <span className="icono">◇</span>
-          <span>Cursos</span>
-        </NavLink>
-
-
-        <NavLink
-          to="/asientos"
-          className={({ isActive }) =>
-            isActive ? "active" : ""
-          }
-          onClick={guardarPosicion}
-        >
-          <span className="icono">□</span>
-          <span>Asientos</span>
-        </NavLink>
-
-
-        <NavLink
-          to="/tutores"
-          className={({ isActive }) =>
-            isActive ? "active" : ""
-          }
-          onClick={guardarPosicion}
-        >
-          <span className="icono">♙</span>
-          <span>Tutores</span>
-        </NavLink>
-
-
-        <NavLink
-          to="/historial"
-          className={({ isActive }) =>
-            isActive ? "active" : ""
-          }
-          onClick={guardarPosicion}
-        >
-          <span className="icono">◷</span>
-          <span>Historial</span>
-        </NavLink>
-
-
-        {/* CONFIGURACIÓN SOLO PARA ADMIN */}
-        {usuario?.rol === "ADMIN" && (
-          <NavLink
-            to="/configuracion"
-            className={({ isActive }) =>
-              isActive ? "active" : ""
-            }
-            onClick={guardarPosicion}
-          >
-            <span className="icono">⚙</span>
-            <span>Configuración</span>
+        <nav className="sidebar-nav">
+          <NavLink to="/home" onClick={guardarPosicion}>
+            <span className="sidebar-icon">⌂</span>
+            <span>Inicio</span>
           </NavLink>
-        )}
 
-      </nav>
+          <NavLink to="/estudiantes" onClick={guardarPosicion}>
+            <span className="sidebar-icon">♙</span>
+            <span>Estudiantes</span>
+          </NavLink>
 
+          <NavLink to="/cursos" onClick={guardarPosicion}>
+            <span className="sidebar-icon">▤</span>
+            <span>Cursos</span>
+          </NavLink>
 
-      {/* USUARIO */}
-      <div className="usuario-sidebar">
+          <NavLink to="/asientos" onClick={guardarPosicion}>
+            <span className="sidebar-icon">▦</span>
+            <span>Asientos</span>
+          </NavLink>
 
-        <div className="usuario-logo">
-          <img
-            src="/escudo-don-bosco.png"
-            alt="Escudo Don Bosco"
-          />
+          <NavLink to="/tutores" onClick={guardarPosicion}>
+            <span className="sidebar-icon">♧</span>
+            <span>Tutores</span>
+          </NavLink>
+
+          <NavLink to="/historial" onClick={guardarPosicion}>
+            <span className="sidebar-icon">◷</span>
+            <span>Historial</span>
+          </NavLink>
+
+          {esAdmin && (
+            <NavLink
+              to="/configuracion"
+              onClick={guardarPosicion}
+            >
+              <span className="sidebar-icon">⚙</span>
+              <span>Configuración</span>
+            </NavLink>
+          )}
+        </nav>
+
+        <div className="sidebar-usuario">
+          <div className="usuario-avatar">
+            {usuario?.nombre?.charAt(0).toUpperCase() || "U"}
+          </div>
+
+          <div className="usuario-info">
+            <strong>{usuario?.nombre || "Usuario"}</strong>
+            <span>{usuario?.rol || "Usuario"}</span>
+          </div>
         </div>
 
-        <div className="usuario-datos">
-          <strong>{nombre}</strong>
-
-          <span>{funcion}</span>
+        <div className="sidebar-footer">
+          <button onClick={cerrarSesion}>
+            <span className="sidebar-icon">⇥</span>
+            <span>Cerrar sesión</span>
+          </button>
         </div>
-
-      </div>
-
-
-      {/* CERRAR SESIÓN */}
-      <button
-        className="boton-cerrar-sesion"
-        onClick={cerrarSesion}
-      >
-        🚪 Cerrar sesión
-      </button>
-
-    </aside>
+      </aside>
+    </>
   );
 }
 
